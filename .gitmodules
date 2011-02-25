@@ -1,0 +1,12 @@
+[submodule "support/expresso"]
+	path = support/expresso
+	url = git://github.com/visionmedia/expresso.git
+[submodule "support/express"]
+	path = support/express
+	url = git://github.com/visionmedia/express.git
+[submodule "support/ejs"]
+	path = support/ejs
+	url = git://github.com/visionmedia/ejs.git
+[submodule "support/connect"]
+	path = support/connect
+	url = git://github.com/senchalabs/connect.git
