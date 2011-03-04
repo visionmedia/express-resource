@@ -10,7 +10,9 @@
  */
 
 var express = require('express')
-  , Server = express.Server;
+  , Server = express.HTTPServer
+    ? express.HTTPServer
+    : express.Server;
 
 /**
  * Initialize a new `Resource` with the given `name` and `actions`.
