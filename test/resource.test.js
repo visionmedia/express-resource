@@ -17,27 +17,27 @@ module.exports = {
     assert.response(app,
       { url: '/forums' },
       { body: 'forum index' });
-    
+
     assert.response(app,
       { url: '/forums/new' },
       { body: 'new forum' });
-    
+
     assert.response(app,
       { url: '/forums', method: 'POST' },
       { body: 'create forum' });
-    
+
     assert.response(app,
       { url: '/forums/5' },
       { body: 'show forum 5' });
-    
+
     assert.response(app,
       { url: '/forums/5/edit' },
       { body: 'edit forum 5' });
-    
+
     assert.response(app,
       { url: '/forums/5', method: 'PUT' },
       { body: 'update forum 5' });
-    
+
     assert.response(app,
       { url: '/forums/5', method: 'DELETE' },
       { body: 'destroy forum 5' });
@@ -52,11 +52,11 @@ module.exports = {
         res.send(req.params.uid);
       }
     });
-  
+
     assert.response(app,
       { url: '/users' },
       { status: 404 });
-    
+
     assert.response(app,
       { url: '/users/10' },
       { body: '10' });

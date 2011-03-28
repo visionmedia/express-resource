@@ -1,6 +1,6 @@
 
 # Express Resource
-      
+
   express-resource provides resourceful routing to express.
 
 ## Installation
@@ -44,7 +44,7 @@ npm:
 The _id_ option can be specified to prevent collisions:
 
      exports.id = 'uid';
-    
+
      exports.destroy = function(req, res) {
        res.send('destroy user ' + req.params.uid);
      };
@@ -54,7 +54,7 @@ The `app.resource()` method will create and return a new `Resource`:
     var express = require('express')
       , Resource = require('express-resource')
       , app = express.createServer();
-    
+
     app.resource('forums', require('./forum'));
 
 Actions are then mapped as follows (by default):
