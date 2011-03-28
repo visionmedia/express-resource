@@ -67,6 +67,26 @@ Actions are then mapped as follows (by default):
     PUT     /forums/:id       ->  update
     DELETE  /forums/:id       ->  destroy
 
+
+Specify a top-level resource using the empty string:
+
+    var express = require('express')
+      , Resource = require('express-resource')
+      , app = express.createServer();
+
+    app.resource('', require('./forum'));
+
+Top-level actions are then mapped as follows (by default):
+
+    GET     /                 ->  index
+    GET     /new              ->  new
+    POST    /                 ->  create
+    GET     /:id              ->  show
+    GET     /:id/edit         ->  edit
+    PUT     /:id              ->  update
+    DELETE  /:id              ->  destroy
+
+
 __NOTE:__ this functionality will surely grow with time, and as data store clients evolve we can provide close integration.
 
 ## Running Tests
