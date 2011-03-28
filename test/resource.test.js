@@ -41,7 +41,42 @@ module.exports = {
       { url: '/forums/5', method: 'DELETE' },
       { body: 'destroy forum 5' });
   },
-  
+
+  'test top-level app.resource()': function(){
+    var app = express.createServer();
+
+    var ret = app.resource('', require('./fixtures/forum'));
+    assert.ok(ret instanceof Resource);
+
+    assert.response(app,
+      { url: '/' },
+      { body: 'forum index' });
+
+    assert.response(app,
+      { url: '/new' },
+      { body: 'new forum' });
+
+    assert.response(app,
+      { url: '/', method: 'POST' },
+      { body: 'create forum' });
+
+    assert.response(app,
+      { url: '/5' },
+      { body: 'show forum 5' });
+
+    assert.response(app,
+      { url: '/5/edit' },
+      { body: 'edit forum 5' });
+
+    assert.response(app,
+      { url: '/5', method: 'PUT' },
+      { body: 'update forum 5' });
+
+    assert.response(app,
+      { url: '/5', method: 'DELETE' },
+      { body: 'destroy forum 5' });
+  },
+
   'test app.resource() id option': function(){
     var app = express.createServer();
 
