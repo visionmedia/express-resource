@@ -1,6 +1,7 @@
 
 /*!
  * Express - Resource
+ * Copyright(c) 2011 Daniel Gasienica <daniel@gasienica.ch>
  * Copyright(c) 2010 TJ Holowaychuk <tj@vision-media.ca>
  * MIT Licensed
  */
@@ -44,29 +45,30 @@ var Resource = module.exports = function Resource(name, actions, app) {
 Resource.prototype.defineAction = function(key, fn){
   var app = this.app
     , id = this.id
-    , name = '/' + this.name;
+    , name = '/' + this.name
+    , path = this.name === '' ? '/' : name + '/';
 
   switch (key) {
     case 'index':
       app.get(name, fn);
       break;
     case 'new':
-      app.get(name + '/new', fn);
+      app.get(path + 'new', fn);
       break;
     case 'create':
       app.post(name, fn);
       break;
     case 'show':
-      app.get(name + '/:' + id, fn);
+      app.get(path + ':' + id, fn);
       break;
     case 'edit':
-      app.get(name + '/:' + id + '/edit', fn);
+      app.get(path + ':' + id + '/edit', fn);
       break;
     case 'update':
-      app.put(name + '/:' + id, fn);
+      app.put(path + ':' + id, fn);
       break;
     case 'destroy':
-      app.del(name + '/:' + id, fn);
+      app.del(path + ':' + id, fn);
       break;
   }
 };
