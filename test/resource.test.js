@@ -2,10 +2,9 @@
 /**
  * Module dependencies.
  */
-
-var express = require('express')
-  , Resource = require('../')
-  , assert = require('assert');
+var assert = require('assert')
+  , express = require('express')
+  , Resource = require('../');
 
 module.exports = {
   'test app.resource()': function(){
