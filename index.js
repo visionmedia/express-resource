@@ -45,8 +45,8 @@ var Resource = module.exports = function Resource(name, actions, app) {
 Resource.prototype.defineAction = function(key, fn){
   var app = this.app
     , id = this.id
-    , name = '/' + this.name
-    , path = this.name === '' ? '/' : name + '/';
+    , name = '/' + (this.name || '')
+    , path = this.name ? name + '/' : '/';
 
   switch (key) {
     case 'index':
@@ -83,7 +83,7 @@ Resource.prototype.defineAction = function(key, fn){
  */
 
 Server.prototype.resource = function(name, actions){
-  if ('object' == typeof name) actions = name, name = '';
+  if ('object' == typeof name) actions = name, name = null;
   this.resources = this.resources || {};
   var res = this.resources[name] = new Resource(name, actions, this);
   return res;
