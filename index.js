@@ -10,10 +10,7 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , Server = express.HTTPServer
-    ? express.HTTPServer
-    : express.Server;
+var express = require('express');
 
 /**
  * Initialize a new `Resource` with the given `name` and `actions`.
@@ -82,7 +79,8 @@ Resource.prototype.defineAction = function(key, fn){
  * @api public
  */
 
-Server.prototype.resource = function(name, actions){
+express.HTTPServer.prototype.resource =
+express.HTTPSServer.prototype.resource = function(name, actions){
   if ('object' == typeof name) actions = name, name = null;
   this.resources = this.resources || {};
   var res = this.resources[name] = new Resource(name, actions, this);
