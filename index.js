@@ -1,8 +1,8 @@
 
 /*!
  * Express - Resource
+ * Copyright(c) 2010-2011 TJ Holowaychuk <tj@vision-media.ca>
  * Copyright(c) 2011 Daniel Gasienica <daniel@gasienica.ch>
- * Copyright(c) 2010 TJ Holowaychuk <tj@vision-media.ca>
  * MIT Licensed
  */
 
