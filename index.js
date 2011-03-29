@@ -76,13 +76,14 @@ Resource.prototype.defineAction = function(key, fn){
 /**
  * Define a resource with the given `name` and `actions`.
  *
- * @param {String} name
+ * @param {String|Object} name or actions
  * @param {Object} actions
  * @return {Resource}
  * @api public
  */
 
 Server.prototype.resource = function(name, actions){
+  if ('object' == typeof name) actions = name, name = '';
   this.resources = this.resources || {};
   var res = this.resources[name] = new Resource(name, actions, this);
   return res;

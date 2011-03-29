@@ -74,7 +74,7 @@ Specify a top-level resource using the empty string:
       , Resource = require('express-resource')
       , app = express.createServer();
 
-    app.resource('', require('./forum'));
+    app.resource(require('./forum'));
 
 Top-level actions are then mapped as follows (by default):
 
