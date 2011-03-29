@@ -2,7 +2,7 @@
 0.0.3 / 2011-03-27
 ==================
 
-  * Added support for top-level resources (using the empty string as name)
+  * Added support for top-level resources [Daniel Gasienica]
 
 0.0.2 / 2011-03-03 
 ==================
