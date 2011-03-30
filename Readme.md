@@ -74,7 +74,7 @@ Specify a top-level resource using the empty string:
       , Resource = require('express-resource')
       , app = express.createServer();
 
-    app.resource('', require('./forum'));
+    app.resource(require('./forum'));
 
 Top-level actions are then mapped as follows (by default):
 
@@ -103,8 +103,8 @@ Then run the tests:
 
     The MIT License
 
+    Copyright (c) 2010-2011 TJ Holowaychuk <tj@vision-media.ca>
     Copyright (c) 2011 Daniel Gasienica <daniel@gasienica.ch>
-    Copyright (c) 2010 TJ Holowaychuk <tj@vision-media.ca>
 
     Permission is hereby granted, free of charge, to any person obtaining
     a copy of this software and associated documentation files (the

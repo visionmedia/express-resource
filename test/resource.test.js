@@ -45,7 +45,7 @@ module.exports = {
   'test top-level app.resource()': function(){
     var app = express.createServer();
 
-    var ret = app.resource('', require('./fixtures/forum'));
+    var ret = app.resource(require('./fixtures/forum'));
     assert.ok(ret instanceof Resource);
 
     assert.response(app,
