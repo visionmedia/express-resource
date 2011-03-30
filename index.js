@@ -10,7 +10,8 @@
  * Module dependencies.
  */
 
-var express = require('express');
+var express = require('express')
+  , en = require('lingo').en;
 
 /**
  * Initialize a new `Resource` with the given `name` and `actions`.
@@ -99,10 +100,7 @@ express.HTTPSServer.prototype.resource = function(name, actions){
 
 express.HTTPServer.prototype.nestedResource =
 express.HTTPSServer.prototype.nestedResource = function(parent, name, actions){
-  var singular = parent;
-  if (parent.slice(-3) == 'ies') singular = parent.slice(0, -3) + 'y';
-  else if (parent.slice(-1) == 's') singular = parent.slice(0, -1);
-  name = parent + '/:' + singular + '_id/' + name;
+  name = parent + '/:' + en.singularize(parent) + '_id/' + name;
   return this.resource.call(this, name, actions);
 };
 

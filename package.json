@@ -5,6 +5,7 @@
   , "contributors": [
     { "name": "Daniel Gasienica", "email": "daniel@gasienica.ch" }
   ]
+  , "dependencies": { "lingo": ">= 0.0.4" }
   , "keywords": ["express", "rest", "resource"]
   , "main": "index"
   , "engines": { "node": ">= 0.2.0" }
