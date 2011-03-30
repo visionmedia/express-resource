@@ -68,7 +68,7 @@ Actions are then mapped as follows (by default):
     DELETE  /forums/:id       ->  destroy
 
 
-Specify a top-level resource using the empty string:
+Specify a top-level resource by omitting the resource name:
 
     var express = require('express')
       , Resource = require('express-resource')
