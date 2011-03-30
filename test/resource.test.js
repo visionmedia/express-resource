@@ -42,6 +42,41 @@ module.exports = {
       { body: 'destroy forum 5' });
   },
 
+  'test app.nestedResource()': function(){
+    var app = express.createServer();
+
+    var ret = app.nestedResource('users', 'projects', require('./fixtures/project'));
+    assert.ok(ret instanceof Resource);
+
+    assert.response(app,
+      { url: '/users/3/projects' },
+      { body: 'user 3, project index' });
+
+    assert.response(app,
+      { url: '/users/3/projects/new' },
+      { body: 'user 3, new project' });
+
+    assert.response(app,
+      { url: '/users/3/projects', method: 'POST' },
+      { body: 'user 3, create project' });
+
+    assert.response(app,
+      { url: '/users/3/projects/5' },
+      { body: 'user 3, show project 5' });
+
+    assert.response(app,
+      { url: '/users/3/projects/5/edit' },
+      { body: 'user 3, edit project 5' });
+
+    assert.response(app,
+      { url: '/users/3/projects/5', method: 'PUT' },
+      { body: 'user 3, update project 5' });
+
+    assert.response(app,
+      { url: '/users/3/projects/5', method: 'DELETE' },
+      { body: 'user 3, destroy project 5' });
+  },
+
   'test top-level app.resource()': function(){
     var app = express.createServer();
 

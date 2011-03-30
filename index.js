@@ -86,3 +86,23 @@ express.HTTPSServer.prototype.resource = function(name, actions){
   var res = this.resources[name] = new Resource(name, actions, this);
   return res;
 };
+
+/**
+ * Define a nested resource with the given `parent`, `name` and `actions`.
+ *
+ * @param {String} parent
+ * @param {String} name
+ * @param {Object} actions
+ * @return {Resource}
+ * @api public
+ */
+
+express.HTTPServer.prototype.nestedResource =
+express.HTTPSServer.prototype.nestedResource = function(parent, name, actions){
+  var singular = parent;
+  if (parent.slice(-3) == 'ies') singular = parent.slice(0, -3) + 'y';
+  else if (parent.slice(-1) == 's') singular = parent.slice(0, -1);
+  name = parent + '/:' + singular + '_id/' + name;
+  return this.resource.call(this, name, actions);
+};
+
