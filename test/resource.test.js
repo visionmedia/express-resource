@@ -77,6 +77,33 @@ module.exports = {
       { body: 'user 3, destroy project 5' });
   },
 
+  'test Resource parent app.nestedResource()': function(){
+    var app = express.createServer();
+
+    var user = app.resource('users', {});
+    app.nestedResource(user, 'projects', { index: function(req, res){
+      res.send('user ' + req.params.user_id + ', project index');
+    }});
+
+    assert.response(app,
+      { url: '/users/3/projects' },
+      { body: 'user 3, project index' });
+  },
+
+  'test deeply nested app.nestedResource()': function(){
+    var app = express.createServer();
+
+    var user = app.resource('users', {});
+    var project = app.nestedResource(user, 'projects', {});
+    app.nestedResource(project, 'images', { index: function(req, res){
+      res.send('user ' + req.params.user_id + ', project ' + req.params.project_id + ', images index');
+    }});
+
+    assert.response(app,
+      { url: '/users/3/projects/7/images' },
+      { body: 'user 3, project 7, images index' });
+  },
+
   'test top-level app.resource()': function(){
     var app = express.createServer();
 
