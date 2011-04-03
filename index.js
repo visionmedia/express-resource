@@ -12,6 +12,8 @@
 
 var express = require('express');
 
+var util = require('util');
+
 /**
  * Initialize a new `Resource` with the given `name` and `actions`.
  *
@@ -45,8 +47,9 @@ Resource.prototype.defineAction = function(key, fn, singular){
   var app = this.app
     , id = this.id
     , name = '/' + (this.name || '')
-    , slash = (this.name? '/' : '')
-    , id_segment = singular? '': slash + ':' + id;
+    , slash1 = this.name? '/' : ''
+		, slash2 = (this.name || !singular)? '/': ''
+    , id_segment = singular? '': slash1 + ':' + id;
     
     if (!singular && key == 'index') {
       app.get(name, fn);
@@ -54,7 +57,7 @@ Resource.prototype.defineAction = function(key, fn, singular){
     else {
       switch (key) {
         case 'new':
-          app.get(name + slash + 'new', fn);
+          app.get(name + slash1 + 'new', fn);
           break;
         case 'create':
           app.post(name, fn);
@@ -63,7 +66,7 @@ Resource.prototype.defineAction = function(key, fn, singular){
           app.get(name + id_segment, fn);
           break;
         case 'edit':
-          app.get(name + id_segment + '/edit', fn);
+          app.get(name + id_segment + slash2 + 'edit', fn);
           break;
         case 'update':
           app.put(name + id_segment, fn);
@@ -74,6 +77,71 @@ Resource.prototype.defineAction = function(key, fn, singular){
       }
   }
 };
+
+/**
+ * Add a member route `key` invoked using the HTTP verb `verb`.
+ *
+ * @param {String} key
+ * @param {String} verb
+ * @api public
+ */
+
+Resource.prototype.member = function(key, verb) {
+  var app = this.app
+    , id = this.id
+    , name = '/' + (this.name || '')
+    , slash = this.name? '/' : ''
+    , id_segment = slash + ':' + id;
+  var fn = this.actions[key];
+  
+  app[verb](name + id_segment + '/' + key, fn);
+	return this;
+};
+
+/**
+ * Add a bunch of member routes.
+ *
+ * @param {Object} mems
+ * @api public
+ */
+
+Resource.prototype.members = function(mems) {
+  for (var key in mems) {
+    this.member(key, mems[key]);
+	}
+};
+
+/**
+ * Add a collection route `key` invoked using the HTTP verb `verb`.
+ *
+ * @param {String} key
+ * @param {String} verb
+ * @api public
+ */
+
+Resource.prototype.collection = function(key, verb) {
+  var app = this.app
+    , id = this.id
+    , name = '/' + (this.name || '')
+    , slash = this.name? '/' : '';
+  var fn = this.actions[key];
+  
+  app[verb](name + slash + key, fn);
+	return this;
+};
+
+/**
+ * Add a bunch of collection routes.
+ *
+ * @param {Object} mems
+ * @api public
+ */
+
+Resource.prototype.collections = function(colls) {
+  for (var key in colls)
+    this.collection(key, colls[key]);
+};
+
 /**
  * Define a resource with the given `name` and `actions`.
  *

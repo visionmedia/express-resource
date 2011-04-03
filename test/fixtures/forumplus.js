@@ -1,3 +1,4 @@
+exports.id = 'id\(\\d\+\)';
 
 exports.index = function(req, res){
   res.send('forum index');
@@ -25,5 +26,21 @@ exports.update = function(req, res){
 
 exports.destroy = function(req, res){
   res.send('destroy forum ' + req.params.id);
+};
+
+exports.search = function(req, res) {
+  res.send('search forum ' + req.params.id);
+};
+
+exports.display = function(req, res) {
+  res.send('display forum ' + req.params.id);
+};
+
+exports.map = function(req, res) {
+	res.send('map forums');
+};
+
+exports.sequence = function(req, res) {
+	res.send('sequence forums');
 };
 
