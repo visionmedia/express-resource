@@ -22,10 +22,10 @@ var express = require('express');
  */
 
 var Resource = module.exports = function Resource(name, actions, app) {
+  this.base = '/';
   this.name = name;
   this.app = app;
-  this.actions = actions
-  this.base = '/';
+  this.actions = actions = actions || {};
   this.id = actions.id || 'id';
   for (var key in actions) {
     this.defineDefaultAction(key, actions[key]);
@@ -113,7 +113,7 @@ express.HTTPServer.prototype.resource =
 express.HTTPSServer.prototype.resource = function(name, actions){
   if ('object' == typeof name) actions = name, name = null;
   this.resources = this.resources || {};
-  if (!actions) return this.resources[name];
+  if (!actions) return this.resources[name] || new Resource(name, null, this);
   var res = this.resources[name] = new Resource(name, actions, this);
   return res;
 };

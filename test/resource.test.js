@@ -101,6 +101,22 @@ module.exports = {
     var app = express.createServer();
     app.resource('users', { index: function(){} });
     app.resource('users').should.be.an.instanceof(Resource);
-    should.equal(null, app.resource('foo'));
+    app.resource('foo').should.be.an.instanceof(Resource);
+  },
+
+  'test http methods': function(){
+    var app = express.createServer();
+
+    var user = app.resource('user');
+    user.get(function(req, res){ res.end('tj'); });
+    user.get('clone', function(req, res){ res.end('tj clone'); });
+
+    assert.response(app,
+      { url: '/user' },
+      { body: 'tj' });
+
+    assert.response(app,
+      { url: '/user/clone' },
+      { body: 'tj clone' });
   }
 };
