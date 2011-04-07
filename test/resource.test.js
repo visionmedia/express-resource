@@ -12,7 +12,7 @@ module.exports = {
     var app = express.createServer();
 
     var ret = app.resource('forums', require('./fixtures/forum'));
-    assert.ok(ret instanceof Resource);
+    ret.should.be.an.instanceof(Resource);
 
     assert.response(app,
       { url: '/forums' },
@@ -47,7 +47,7 @@ module.exports = {
     var app = express.createServer();
 
     var ret = app.resource(require('./fixtures/forum'));
-    assert.ok(ret instanceof Resource);
+    ret.should.be.an.instanceof(Resource);
 
     assert.response(app,
       { url: '/' },
