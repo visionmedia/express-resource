@@ -76,16 +76,29 @@ Resource.prototype.map = function(method, path, fn){
   if (method instanceof Resource) return this.add(method);
   if ('function' == typeof path) fn = path, path = '';
   method = method.toLowerCase();
+
+  // setup route pathname
   var route = this.base + (this.name || '');
   route += (this.name && path) ? '/' : '';
   route += path;
+  route += '.:format?';
+
+  // register the route so we may
+  // later remove it
   (this.routes[method] = this.routes[method] || {})[route] = {
       method: method
     , path: route
     , orig: path
     , fn: fn
   };
-  this.app[method](route, fn);
+
+  // apply the route
+  this.app[method](route, function(req, res, next){
+    req.format = req.params.format;
+    if (req.format) res.contentType(req.format);
+    fn(req, res, next);
+  });
+
   return this;
 };
 
