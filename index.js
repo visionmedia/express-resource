@@ -29,7 +29,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
   actions = actions || {};
   this.id = actions.id || 'id';
   for (var key in actions) {
-    this.defineDefaultAction(key, actions[key]);
+    this.mapDefaultAction(key, actions[key]);
   }
 };
 
@@ -44,14 +44,19 @@ var Resource = module.exports = function Resource(name, actions, app) {
  */
 
 Resource.prototype.map = function(method, path, fn){
-  if (method instanceof Resource) return this.nest(method);
+  if (method instanceof Resource) return this.add(method);
   if ('function' == typeof path) fn = path, path = '';
   method = method.toLowerCase();
-  var name = this.base + (this.name || '');
-  name += (this.name && path) ? '/' : '';
-  name += path;
-  this.routes[name] = { path: name, method: method, fn: fn };
-  this.app[method](name, fn);
+  var route = this.base + (this.name || '');
+  route += (this.name && path) ? '/' : '';
+  route += path;
+  (this.routes[method] = this.routes[method] || {})[route] = {
+      method: method
+    , path: route
+    , orig: path
+    , fn: fn
+  };
+  this.app[method](route, fn);
   return this;
 };
 
@@ -61,22 +66,38 @@ Resource.prototype.map = function(method, path, fn){
  * @param {Resource} resource
  * @return {Resource} for chaining
  * @see Resource#map()
- * @api private
+ * @api public
  */
 
-Resource.prototype.nest = function(resource){
-  
+Resource.prototype.add = function(resource){
+  var router = this.app.router
+    , routes
+    , route;
+
+  // relative base
+  resource.base = this.base + this.name + '/:' + this.id + '/';
+
+  // re-define previous actions
+  for (var method in resource.routes) {
+    routes = resource.routes[method];
+    for (var key in routes) {
+      route = routes[key];
+      delete routes[key];
+      router.remove(key, route.method);
+      resource.map(route.method, route.orig, route.fn);
+    }
+  }
 };
 
 /**
- * Define the given action `name` with a callback `fn()`.
+ * Map the given action `name` with a callback `fn()`.
  *
  * @param {String} key
  * @param {Function} fn
  * @api private
  */
 
-Resource.prototype.defineDefaultAction = function(key, fn){
+Resource.prototype.mapDefaultAction = function(key, fn){
   var id = this.id
 
   switch (key) {

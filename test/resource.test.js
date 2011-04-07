@@ -104,19 +104,6 @@ module.exports = {
     app.resource('foo').should.be.an.instanceof(Resource);
   },
 
-  'test .routes': function(){
-    var app = express.createServer();
-
-    var user = app.resource('user', { update: function(){} });
-    user.map('GET', function(){});
-    user.map('get', 'new', function(){});
-
-    user.routes.should.have.keys('/user/:id', '/user', '/user/new');
-    user.routes['/user'].fn.should.be.a('function');
-    user.routes['/user'].path.should.equal('/user');
-    user.routes['/user'].method.should.equal('get');
-  },
-
   'test http methods': function(){
     var app = express.createServer();
 
@@ -133,12 +120,11 @@ module.exports = {
       { body: 'tj clone' });
   },
   
-  'test nesting': function(){
+  'test shallow nesting': function(){
     var app = express.createServer();
 
     var forum = app.resource('forums', require('./fixtures/forum'));
     var thread = app.resource('threads', require('./fixtures/thread'));
-    
     forum.map(thread);
 
     assert.response(app,
@@ -152,9 +138,40 @@ module.exports = {
     assert.response(app,
       { url: '/forums/12/threads' },
       { body: 'thread index' });
-
+    
     assert.response(app,
       { url: '/forums/1/threads/50' },
+      { body: 'show thread 50' });
+  },
+  
+  'test deep nesting': function(){
+    var app = express.createServer();
+
+    var user = app.resource('users', { index: function(req, res){ res.end('users'); } });
+    var forum = app.resource('forums', require('./fixtures/forum'));
+    var thread = app.resource('threads', require('./fixtures/thread'));
+
+    user.add(forum);
+    forum.add(thread);
+
+    assert.response(app,
+      { url: '/users' },
+      { body: 'users' });
+
+    assert.response(app,
+      { url: '/users/5/forums' },
+      { body: 'forum index' });
+    
+    assert.response(app,
+      { url: '/users/5/forums/12' },
+      { body: 'show forum 12' });
+    
+    assert.response(app,
+      { url: '/users/5/forums/12/threads' },
+      { body: 'thread index' });
+    
+    assert.response(app,
+      { url: '/users/5/forums/1/threads/50' },
       { body: 'show thread 50' });
   }
 };
