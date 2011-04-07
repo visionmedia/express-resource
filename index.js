@@ -30,6 +30,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.routes = {};
   actions = actions || {};
   this.id = actions.id || this.defaultId;
+  this.param = ':' + this.id;
   for (var key in actions) {
     this.mapDefaultAction(key, actions[key]);
   }
@@ -90,7 +91,7 @@ Resource.prototype.add = function(resource){
     , route;
 
   // relative base
-  resource.base = this.base + this.name + '/:' + this.id + '/';
+  resource.base = this.base + this.name + '/' + this.param + '/';
 
   // re-define previous actions
   for (var method in resource.routes) {
@@ -113,7 +114,7 @@ Resource.prototype.add = function(resource){
  */
 
 Resource.prototype.mapDefaultAction = function(key, fn){
-  var id = this.id
+  var id = this.param;
 
   switch (key) {
     case 'index':
@@ -126,16 +127,16 @@ Resource.prototype.mapDefaultAction = function(key, fn){
       this.post(fn);
       break;
     case 'show':
-      this.get(':' + id, fn);
+      this.get(id, fn);
       break;
     case 'edit':
-      this.get(':' + id + '/edit', fn);
+      this.get(id + '/edit', fn);
       break;
     case 'update':
-      this.put(':' + id, fn);
+      this.put(id, fn);
       break;
     case 'destroy':
-      this.del(':' + id, fn);
+      this.del(id, fn);
       break;
   }
 };
