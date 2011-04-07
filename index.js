@@ -27,7 +27,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.actions = actions
   this.id = actions.id || 'id';
   for (var key in actions) {
-    this.defineAction(key, actions[key]);
+    this.defineDefaultAction(key, actions[key]);
   }
 };
 
@@ -36,10 +36,10 @@ var Resource = module.exports = function Resource(name, actions, app) {
  *
  * @param {String} key
  * @param {Function} fn
- * @api public
+ * @api private
  */
 
-Resource.prototype.defineAction = function(key, fn){
+Resource.prototype.defineDefaultAction = function(key, fn){
   var app = this.app
     , id = this.id
     , name = '/' + (this.name || '')
