@@ -4,6 +4,7 @@
  */
 var assert = require('assert')
   , express = require('express')
+  , should = require('should')
   , Resource = require('../');
 
 module.exports = {
@@ -94,5 +95,12 @@ module.exports = {
     assert.response(app,
       { url: '/users/10' },
       { body: '10' });
+  },
+  
+  'test fetching a resource object': function(){
+    var app = express.createServer();
+    app.resource('users', { index: function(){} });
+    app.resource('users').should.be.an.instanceof(Resource);
+    should.equal(null, app.resource('foo'));
   }
 };

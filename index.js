@@ -113,6 +113,7 @@ express.HTTPServer.prototype.resource =
 express.HTTPSServer.prototype.resource = function(name, actions){
   if ('object' == typeof name) actions = name, name = null;
   this.resources = this.resources || {};
+  if (!actions) return this.resources[name];
   var res = this.resources[name] = new Resource(name, actions, this);
   return res;
 };
