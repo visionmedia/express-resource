@@ -33,6 +33,26 @@ var Resource = module.exports = function Resource(name, actions, app) {
 };
 
 /**
+ * Map http `method` and optional `path` to `fn`.
+ *
+ * @param {String} method
+ * @param {String|Function} path
+ * @param {Function} fn
+ * @return {Resource} for chaining
+ * @api public
+ */
+
+Resource.prototype.map = function(method, path, fn){
+  if ('function' == typeof path) fn = path, path = '';
+  method = method.toLowerCase();
+  var name = this.base + (this.name || '');
+  name += (this.name && path) ? '/' : '';
+  name += path;
+  this.app[method](name, fn);
+  return this;
+};
+
+/**
  * Define the given action `name` with a callback `fn()`.
  *
  * @param {String} key
@@ -48,25 +68,25 @@ Resource.prototype.defineDefaultAction = function(key, fn){
 
   switch (key) {
     case 'index':
-      app.get(name, fn);
+      this.map('GET', fn);
       break;
     case 'new':
-      app.get(path + 'new', fn);
+      this.map('GET', 'new', fn);
       break;
     case 'create':
-      app.post(name, fn);
+      this.map('POST', fn);
       break;
     case 'show':
-      app.get(path + ':' + id, fn);
+      this.map('GET', ':' + id, fn);
       break;
     case 'edit':
-      app.get(path + ':' + id + '/edit', fn);
+      this.map('GET', ':' + id + '/edit', fn);
       break;
     case 'update':
-      app.put(path + ':' + id, fn);
+      this.map('PUT', ':' + id, fn);
       break;
     case 'destroy':
-      app.del(path + ':' + id, fn);
+      this.map('DEL', ':' + id, fn);
       break;
   }
 };
