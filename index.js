@@ -65,28 +65,40 @@ Resource.prototype.defineDefaultAction = function(key, fn){
 
   switch (key) {
     case 'index':
-      this.map('GET', fn);
+      this.get(fn);
       break;
     case 'new':
-      this.map('GET', 'new', fn);
+      this.get('new', fn);
       break;
     case 'create':
-      this.map('POST', fn);
+      this.post(fn);
       break;
     case 'show':
-      this.map('GET', ':' + id, fn);
+      this.get(':' + id, fn);
       break;
     case 'edit':
-      this.map('GET', ':' + id + '/edit', fn);
+      this.get(':' + id + '/edit', fn);
       break;
     case 'update':
-      this.map('PUT', ':' + id, fn);
+      this.put(':' + id, fn);
       break;
     case 'destroy':
-      this.map('DEL', ':' + id, fn);
+      this.del(':' + id, fn);
       break;
   }
 };
+
+/**
+ * Setup http verb methods.
+ */
+
+express.router.methods.concat(['del', 'all']).forEach(function(method){
+  Resource.prototype[method] = function(path, fn){
+    if ('function' == typeof path) fn = path, path = '';
+    this.map(method, path, fn);
+    return this;
+  }
+});
 
 /**
  * Define a resource with the given `name` and `actions`.
