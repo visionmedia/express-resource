@@ -44,6 +44,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
  */
 
 Resource.prototype.map = function(method, path, fn){
+  if (method instanceof Resource) return this.nest(method);
   if ('function' == typeof path) fn = path, path = '';
   method = method.toLowerCase();
   var name = this.base + (this.name || '');
@@ -52,6 +53,19 @@ Resource.prototype.map = function(method, path, fn){
   this.routes[name] = { path: name, method: method, fn: fn };
   this.app[method](name, fn);
   return this;
+};
+
+/**
+ * Nest the given `resource`.
+ *
+ * @param {Resource} resource
+ * @return {Resource} for chaining
+ * @see Resource#map()
+ * @api private
+ */
+
+Resource.prototype.nest = function(resource){
+  
 };
 
 /**

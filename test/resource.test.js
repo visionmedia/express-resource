@@ -131,5 +131,30 @@ module.exports = {
     assert.response(app,
       { url: '/user/clone' },
       { body: 'tj clone' });
+  },
+  
+  'test nesting': function(){
+    var app = express.createServer();
+
+    var forum = app.resource('forums', require('./fixtures/forum'));
+    var thread = app.resource('threads', require('./fixtures/thread'));
+    
+    forum.map(thread);
+
+    assert.response(app,
+      { url: '/forums' },
+      { body: 'forum index' });
+
+    assert.response(app,
+      { url: '/forums/12' },
+      { body: 'show forum 12' });
+
+    assert.response(app,
+      { url: '/forums/12/threads' },
+      { body: 'thread index' });
+
+    assert.response(app,
+      { url: '/forums/1/threads/50' },
+      { body: 'show thread 50' });
   }
 };
