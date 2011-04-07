@@ -25,7 +25,8 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.base = '/';
   this.name = name;
   this.app = app;
-  this.actions = actions = actions || {};
+  this.routes = {};
+  actions = actions || {};
   this.id = actions.id || 'id';
   for (var key in actions) {
     this.defineDefaultAction(key, actions[key]);
@@ -48,6 +49,7 @@ Resource.prototype.map = function(method, path, fn){
   var name = this.base + (this.name || '');
   name += (this.name && path) ? '/' : '';
   name += path;
+  this.routes[name] = { path: name, method: method, fn: fn };
   this.app[method](name, fn);
   return this;
 };

@@ -104,6 +104,19 @@ module.exports = {
     app.resource('foo').should.be.an.instanceof(Resource);
   },
 
+  'test .routes': function(){
+    var app = express.createServer();
+
+    var user = app.resource('user', { update: function(){} });
+    user.map('GET', function(){});
+    user.map('get', 'new', function(){});
+
+    user.routes.should.have.keys('/user/:id', '/user', '/user/new');
+    user.routes['/user'].fn.should.be.a('function');
+    user.routes['/user'].path.should.equal('/user');
+    user.routes['/user'].method.should.equal('get');
+  },
+
   'test http methods': function(){
     var app = express.createServer();
 
