@@ -189,12 +189,13 @@ express.router.methods.concat(['del', 'all']).forEach(function(method){
  */
 
 express.HTTPServer.prototype.resource =
-express.HTTPSServer.prototype.resource = function(name, actions){
+express.HTTPSServer.prototype.resource = function(name, actions, opts){
   var options = actions || {};
   if ('object' == typeof name) actions = name, name = null;
   if (options.id) actions.id = options.id;
   this.resources = this.resources || {};
   if (!actions) return this.resources[name] || new Resource(name, null, this);
+  for (var key in opts) options[key] = opts[key];
   var res = this.resources[name] = new Resource(name, actions, this);
   return res;
 };

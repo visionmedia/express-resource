@@ -207,8 +207,7 @@ module.exports = {
 
     var forum = app.resource('forum', { load: Forum.get });
 
-    actions.load = Thread.get;
-    var threads = app.resource('thread', actions);
+    var threads = app.resource('thread', actions, { load: Thread.get });
 
     forum.add(threads);
 
