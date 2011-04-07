@@ -215,5 +215,20 @@ module.exports = {
     assert.response(app,
       { url: '/forum/12/thread/1' },
       { body: 'Ferrets: Tobi rules' });
+  },
+  
+  'test auto-loading no resource': function(){
+     var app = express.createServer();
+
+     function load(id, fn) { fn(); }
+     var actions = { show: function(){
+       assert.fail('called show when loader failed');
+     }};
+
+     app.resource('pets', actions, { load: load });
+
+     assert.response(app,
+      { url: '/pets/0' },
+      { body: 'Not Found', status: 404 });
   }
 };
