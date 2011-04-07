@@ -12,17 +12,17 @@ exports.create = function(req, res){
 };
 
 exports.show = function(req, res){
-  res.send('show thread ' + req.params.id);
+  res.send('show thread ' + req.params.thread_id);
 };
 
 exports.edit = function(req, res){
-  res.send('edit thread ' + req.params.id);
+  res.send('edit thread ' + req.params.thread_id);
 };
 
 exports.update = function(req, res){
-  res.send('update thread ' + req.params.id);
+  res.send('update thread ' + req.params.thread_id);
 };
 
 exports.destroy = function(req, res){
-  res.send('destroy thread ' + req.params.id);
+  res.send('destroy thread ' + req.params.thread_id);
 };
