@@ -137,11 +137,11 @@ module.exports = {
 
     assert.response(app,
       { url: '/forums/12/threads' },
-      { body: 'thread index' });
+      { body: 'thread index of forum 12' });
     
     assert.response(app,
       { url: '/forums/1/threads/50' },
-      { body: 'show thread 50' });
+      { body: 'show thread 50 of forum 1' });
   },
   
   'test deep nesting': function(){
@@ -168,10 +168,10 @@ module.exports = {
     
     assert.response(app,
       { url: '/users/5/forums/12/threads' },
-      { body: 'thread index' });
+      { body: 'thread index of forum 5' });
     
     assert.response(app,
       { url: '/users/5/forums/1/threads/50' },
-      { body: 'show thread 50' });
+      { body: 'show thread 50 of forum 5' });
   }
 };

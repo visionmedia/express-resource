@@ -1,6 +1,6 @@
 
 exports.index = function(req, res){
-  res.send('thread index');
+  res.send('thread index of forum ' + req.params.forum_id);
 };
 
 exports.new = function(req, res){
