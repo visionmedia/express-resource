@@ -29,6 +29,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.app = app;
   this.routes = {};
   actions = actions || {};
+  this.format = actions.format;
   var id = this.id = actions.id || this.defaultId;
   this.param = ':' + this.id;
 
@@ -73,19 +74,33 @@ Resource.prototype.__defineGetter__('defaultId', function(){
  */
 
 Resource.prototype.map = function(method, path, fn){
+  var self = this;
   if (method instanceof Resource) return this.add(method);
   if ('function' == typeof path) fn = path, path = '';
   method = method.toLowerCase();
+
+  // setup route pathname
   var route = this.base + (this.name || '');
   route += (this.name && path) ? '/' : '';
   route += path;
+  route += '.:format?';
+
+  // register the route so we may
+  // later remove it
   (this.routes[method] = this.routes[method] || {})[route] = {
       method: method
     , path: route
     , orig: path
     , fn: fn
   };
-  this.app[method](route, fn);
+
+  // apply the route
+  this.app[method](route, function(req, res, next){
+    req.format = req.params.format || self.format;
+    if (req.format) res.contentType(req.format);
+    fn(req, res, next);
+  });
+
   return this;
 };
 
@@ -116,6 +131,8 @@ Resource.prototype.add = function(resource){
       resource.map(route.method, route.orig, route.fn);
     }
   }
+
+  return this;
 };
 
 /**
@@ -176,12 +193,13 @@ express.router.methods.concat(['del', 'all']).forEach(function(method){
  */
 
 express.HTTPServer.prototype.resource =
-express.HTTPSServer.prototype.resource = function(name, actions){
+express.HTTPSServer.prototype.resource = function(name, actions, opts){
   var options = actions || {};
   if ('object' == typeof name) actions = name, name = null;
   if (options.id) actions.id = options.id;
   this.resources = this.resources || {};
   if (!actions) return this.resources[name] || new Resource(name, null, this);
+  for (var key in opts) options[key] = opts[key];
   var res = this.resources[name] = new Resource(name, actions, this);
   return res;
 };
