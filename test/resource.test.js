@@ -151,8 +151,11 @@ module.exports = {
     var forum = app.resource('forums', require('./fixtures/forum'));
     var thread = app.resource('threads', require('./fixtures/thread'));
 
-    user.add(forum);
-    forum.add(thread);
+    var ret = user.add(forum);
+    ret.should.equal(user);
+    
+    var ret = forum.add(thread);
+    ret.should.equal(forum);
 
     assert.response(app,
       { url: '/forums/20' },
@@ -188,7 +191,6 @@ module.exports = {
     }};
 
     actions.load = Forum.get;
-
     var forum = app.resource('forum', actions);
 
     assert.response(app,
@@ -206,7 +208,6 @@ module.exports = {
     }};
 
     var forum = app.resource('forum', { load: Forum.get });
-
     var threads = app.resource('thread', actions, { load: Thread.get });
 
     forum.add(threads);

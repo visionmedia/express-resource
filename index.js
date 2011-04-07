@@ -129,6 +129,8 @@ Resource.prototype.add = function(resource){
       resource.map(route.method, route.orig, route.fn);
     }
   }
+
+  return this;
 };
 
 /**
