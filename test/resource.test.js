@@ -177,5 +177,43 @@ module.exports = {
     assert.response(app,
       { url: '/users/5/forums/1/threads/50' },
       { body: 'show thread 50 of forum 1' });
+  },
+
+  'test shallow auto-loading': function(){
+    var app = express.createServer();
+    var Forum = require('./fixtures/forum').Forum;
+
+    var actions = { show: function(req, res){
+      res.end(req.forum.title);
+    }};
+
+    actions.load = Forum.get;
+
+    var forum = app.resource('forum', actions);
+
+    assert.response(app,
+      { url: '/forum/12' },
+      { body: 'Ferrets' });
+  },
+  
+  'test deep auto-loading': function(){
+    var app = express.createServer();
+    var Forum = require('./fixtures/forum').Forum
+      , Thread = require('./fixtures/thread').Thread;
+
+    var actions = { show: function(req, res){
+      res.end(req.forum.title + ': ' + req.thread.title);
+    }};
+
+    var forum = app.resource('forum', { load: Forum.get });
+
+    actions.load = Thread.get;
+    var threads = app.resource('thread', actions);
+
+    forum.add(threads);
+
+    assert.response(app,
+      { url: '/forum/12/thread/1' },
+      { body: 'Ferrets: Tobi rules' });
   }
 };

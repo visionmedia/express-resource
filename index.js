@@ -29,10 +29,23 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.app = app;
   this.routes = {};
   actions = actions || {};
-  this.id = actions.id || this.defaultId;
+  var id = this.id = actions.id || this.defaultId;
   this.param = ':' + this.id;
+
+  // default actions
   for (var key in actions) {
     this.mapDefaultAction(key, actions[key]);
+  }
+
+  // auto-loader
+  if (actions.load) {
+    app.param(this.id, function(req, res, next){
+      actions.load(req.params[id], function(err, obj){
+        if (err) return next(err);
+        req[id] = obj;
+        next();
+      });
+    });
   }
 };
 
