@@ -46,7 +46,7 @@ module.exports = {
   'test top-level app.resource()': function(){
     var app = express.createServer();
 
-    var ret = app.resource(require('./fixtures/forum'), { id: 'forum_id' });
+    var ret = app.resource(require('./fixtures/forum'), { id: 'forum' });
     ret.should.be.an.instanceof(Resource);
 
     assert.response(app,

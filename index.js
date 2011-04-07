@@ -45,7 +45,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
 
 Resource.prototype.__defineGetter__('defaultId', function(){
   return this.name
-    ? en.singularize(this.name) + '_id'
+    ? en.singularize(this.name)
     : 'id';
 });
 

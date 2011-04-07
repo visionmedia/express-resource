@@ -12,17 +12,17 @@ exports.create = function(req, res){
 };
 
 exports.show = function(req, res){
-  res.send('show forum ' + req.params.forum_id);
+  res.send('show forum ' + req.params.forum);
 };
 
 exports.edit = function(req, res){
-  res.send('edit forum ' + req.params.forum_id);
+  res.send('edit forum ' + req.params.forum);
 };
 
 exports.update = function(req, res){
-  res.send('update forum ' + req.params.forum_id);
+  res.send('update forum ' + req.params.forum);
 };
 
 exports.destroy = function(req, res){
-  res.send('destroy forum ' + req.params.forum_id);
+  res.send('destroy forum ' + req.params.forum);
 };
