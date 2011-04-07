@@ -46,33 +46,33 @@ module.exports = {
   'test top-level app.resource()': function(){
     var app = express.createServer();
 
-    var ret = app.resource(require('./fixtures/forum'));
+    var ret = app.resource(require('./fixtures/forum'), { id: 'forum_id' });
     ret.should.be.an.instanceof(Resource);
 
     assert.response(app,
       { url: '/' },
       { body: 'forum index' });
-
+    
     assert.response(app,
       { url: '/new' },
       { body: 'new forum' });
-
+    
     assert.response(app,
       { url: '/', method: 'POST' },
       { body: 'create forum' });
-
+    
     assert.response(app,
       { url: '/5' },
       { body: 'show forum 5' });
-
+    
     assert.response(app,
       { url: '/5/edit' },
       { body: 'edit forum 5' });
-
+    
     assert.response(app,
       { url: '/5', method: 'PUT' },
       { body: 'update forum 5' });
-
+    
     assert.response(app,
       { url: '/5', method: 'DELETE' },
       { body: 'destroy forum 5' });
@@ -137,11 +137,11 @@ module.exports = {
 
     assert.response(app,
       { url: '/forums/12/threads' },
-      { body: 'thread index' });
+      { body: 'thread index of forum 12' });
     
     assert.response(app,
       { url: '/forums/1/threads/50' },
-      { body: 'show thread 50' });
+      { body: 'show thread 50 of forum 1' });
   },
   
   'test deep nesting': function(){
@@ -153,6 +153,10 @@ module.exports = {
 
     user.add(forum);
     forum.add(thread);
+
+    assert.response(app,
+      { url: '/forums/20' },
+      { status: 404 });
 
     assert.response(app,
       { url: '/users' },
@@ -168,10 +172,10 @@ module.exports = {
     
     assert.response(app,
       { url: '/users/5/forums/12/threads' },
-      { body: 'thread index' });
+      { body: 'thread index of forum 12' });
     
     assert.response(app,
       { url: '/users/5/forums/1/threads/50' },
-      { body: 'show thread 50' });
+      { body: 'show thread 50 of forum 1' });
   }
 };

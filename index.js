@@ -10,7 +10,9 @@
  * Module dependencies.
  */
 
-var express = require('express');
+var express = require('express')
+  , lingo = require('lingo')
+  , en = lingo.en;
 
 /**
  * Initialize a new `Resource` with the given `name` and `actions`.
@@ -27,11 +29,25 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.app = app;
   this.routes = {};
   actions = actions || {};
-  this.id = actions.id || 'id';
+  this.id = actions.id || this.defaultId;
+  this.param = ':' + this.id;
   for (var key in actions) {
     this.mapDefaultAction(key, actions[key]);
   }
 };
+
+/**
+ * Retun this resource's default id string.
+ *
+ * @return {String}
+ * @api private
+ */
+
+Resource.prototype.__defineGetter__('defaultId', function(){
+  return this.name
+    ? en.singularize(this.name) + '_id'
+    : 'id';
+});
 
 /**
  * Map http `method` and optional `path` to `fn`.
@@ -75,7 +91,7 @@ Resource.prototype.add = function(resource){
     , route;
 
   // relative base
-  resource.base = this.base + this.name + '/:' + this.id + '/';
+  resource.base = this.base + this.name + '/' + this.param + '/';
 
   // re-define previous actions
   for (var method in resource.routes) {
@@ -98,7 +114,7 @@ Resource.prototype.add = function(resource){
  */
 
 Resource.prototype.mapDefaultAction = function(key, fn){
-  var id = this.id
+  var id = this.param;
 
   switch (key) {
     case 'index':
@@ -111,16 +127,16 @@ Resource.prototype.mapDefaultAction = function(key, fn){
       this.post(fn);
       break;
     case 'show':
-      this.get(':' + id, fn);
+      this.get(id, fn);
       break;
     case 'edit':
-      this.get(':' + id + '/edit', fn);
+      this.get(id + '/edit', fn);
       break;
     case 'update':
-      this.put(':' + id, fn);
+      this.put(id, fn);
       break;
     case 'destroy':
-      this.del(':' + id, fn);
+      this.del(id, fn);
       break;
   }
 };
@@ -148,7 +164,9 @@ express.router.methods.concat(['del', 'all']).forEach(function(method){
 
 express.HTTPServer.prototype.resource =
 express.HTTPSServer.prototype.resource = function(name, actions){
+  var options = actions || {};
   if ('object' == typeof name) actions = name, name = null;
+  if (options.id) actions.id = options.id;
   this.resources = this.resources || {};
   if (!actions) return this.resources[name] || new Resource(name, null, this);
   var res = this.resources[name] = new Resource(name, actions, this);
