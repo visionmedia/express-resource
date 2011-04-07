@@ -26,3 +26,9 @@ exports.update = function(req, res){
 exports.destroy = function(req, res){
   res.send('destroy forum ' + req.params.forum);
 };
+
+exports.Forum = { get: function(id, fn){
+  process.nextTick(function(){
+    fn(null, { title: 'Ferrets' });
+  });
+}};

@@ -177,5 +177,61 @@ module.exports = {
     assert.response(app,
       { url: '/users/5/forums/1/threads/50' },
       { body: 'show thread 50 of forum 1' });
+  },
+
+  'test shallow auto-loading': function(){
+    var app = express.createServer();
+    var Forum = require('./fixtures/forum').Forum;
+
+    var actions = { show: function(req, res){
+      res.end(req.forum.title);
+    }};
+
+    var forum = app.resource('forum', actions);
+    app.param('forum', function(req, res, next){
+      Forum.get(req.params.forum, function(err, obj){
+        if (err) return next(err);
+        req.forum = obj;
+        next();
+      });
+    });
+
+    assert.response(app,
+      { url: '/forum/12' },
+      { body: 'Ferrets' });
+  },
+  
+  'test deep auto-loading': function(){
+    var app = express.createServer();
+    var Forum = require('./fixtures/forum').Forum
+      , Thread = require('./fixtures/thread').Thread;
+
+    var actions = { show: function(req, res){
+      res.end(req.forum.title + ': ' + req.thread.title);
+    }};
+
+    var forum = app.resource('forum');
+    app.param('forum', function(req, res, next){
+      Forum.get(req.params.forum, function(err, obj){
+        if (err) return next(err);
+        req.forum = obj;
+        next();
+      });
+    });
+
+    var threads = app.resource('thread', actions);
+    app.param('thread', function(req, res, next){
+      Thread.get(req.params.thread, function(err, obj){
+        if (err) return next(err);
+        req.thread = obj;
+        next();
+      });
+    });
+
+    forum.add(threads);
+
+    assert.response(app,
+      { url: '/forum/12/thread/1' },
+      { body: 'Ferrets: Tobi rules' });
   }
 };

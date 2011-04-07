@@ -26,3 +26,9 @@ exports.update = function(req, res){
 exports.destroy = function(req, res){
   res.send('destroy thread ' + req.params.thread + ' of forum ' + req.params.forum);
 };
+
+exports.Thread = { get: function(id, fn){
+  process.nextTick(function(){
+    fn(null, { title: 'Tobi rules' });
+  });
+}};
