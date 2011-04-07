@@ -29,7 +29,16 @@ module.exports = {
       }
     };
 
-    app.resource('pets', actions);
+    app.resource('pets', actions, { format: 'json' });
+
+    assert.response(app,
+      { url: '/pets.html' },
+      { body: 'Unsupported Media Type'
+      , status : 415 });
+
+    assert.response(app,
+      { url: '/pets' },
+      { body: '["tobi","jane","loki"]' });
 
     assert.response(app,
       { url: '/pets.xml' },

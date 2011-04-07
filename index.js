@@ -29,6 +29,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.app = app;
   this.routes = {};
   actions = actions || {};
+  this.format = actions.format;
   var id = this.id = actions.id || this.defaultId;
   this.param = ':' + this.id;
 
@@ -73,6 +74,7 @@ Resource.prototype.__defineGetter__('defaultId', function(){
  */
 
 Resource.prototype.map = function(method, path, fn){
+  var self = this;
   if (method instanceof Resource) return this.add(method);
   if ('function' == typeof path) fn = path, path = '';
   method = method.toLowerCase();
@@ -94,7 +96,7 @@ Resource.prototype.map = function(method, path, fn){
 
   // apply the route
   this.app[method](route, function(req, res, next){
-    req.format = req.params.format;
+    req.format = req.params.format || self.format;
     if (req.format) res.contentType(req.format);
     fn(req, res, next);
   });
