@@ -187,14 +187,9 @@ module.exports = {
       res.end(req.forum.title);
     }};
 
+    actions.load = Forum.get;
+
     var forum = app.resource('forum', actions);
-    app.param('forum', function(req, res, next){
-      Forum.get(req.params.forum, function(err, obj){
-        if (err) return next(err);
-        req.forum = obj;
-        next();
-      });
-    });
 
     assert.response(app,
       { url: '/forum/12' },
@@ -210,23 +205,10 @@ module.exports = {
       res.end(req.forum.title + ': ' + req.thread.title);
     }};
 
-    var forum = app.resource('forum');
-    app.param('forum', function(req, res, next){
-      Forum.get(req.params.forum, function(err, obj){
-        if (err) return next(err);
-        req.forum = obj;
-        next();
-      });
-    });
+    var forum = app.resource('forum', { load: Forum.get });
 
+    actions.load = Thread.get;
     var threads = app.resource('thread', actions);
-    app.param('thread', function(req, res, next){
-      Thread.get(req.params.thread, function(err, obj){
-        if (err) return next(err);
-        req.thread = obj;
-        next();
-      });
-    });
 
     forum.add(threads);
 
