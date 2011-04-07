@@ -10,7 +10,9 @@
  * Module dependencies.
  */
 
-var express = require('express');
+var express = require('express')
+  , lingo = require('lingo')
+  , en = lingo.en;
 
 /**
  * Initialize a new `Resource` with the given `name` and `actions`.
@@ -27,11 +29,24 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.app = app;
   this.routes = {};
   actions = actions || {};
-  this.id = actions.id || 'id';
+  this.id = actions.id || this.defaultId;
   for (var key in actions) {
     this.mapDefaultAction(key, actions[key]);
   }
 };
+
+/**
+ * Retun this resource's default id string.
+ *
+ * @return {String}
+ * @api private
+ */
+
+Resource.prototype.__defineGetter__('defaultId', function(){
+  return this.name
+    ? en.singularize(this.name) + '_id'
+    : 'id';
+});
 
 /**
  * Map http `method` and optional `path` to `fn`.
