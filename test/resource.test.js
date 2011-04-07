@@ -46,36 +46,36 @@ module.exports = {
   'test top-level app.resource()': function(){
     var app = express.createServer();
 
-    var ret = app.resource(require('./fixtures/forum'));
+    var ret = app.resource(require('./fixtures/forum'), { id: 'forum_id' });
     ret.should.be.an.instanceof(Resource);
 
-    // assert.response(app,
-    //   { url: '/' },
-    //   { body: 'forum index' });
-    // 
-    // assert.response(app,
-    //   { url: '/new' },
-    //   { body: 'new forum' });
-    // 
-    // assert.response(app,
-    //   { url: '/', method: 'POST' },
-    //   { body: 'create forum' });
-    // 
-    // assert.response(app,
-    //   { url: '/5' },
-    //   { body: 'show forum 5' });
-    // 
-    // assert.response(app,
-    //   { url: '/5/edit' },
-    //   { body: 'edit forum 5' });
-    // 
-    // assert.response(app,
-    //   { url: '/5', method: 'PUT' },
-    //   { body: 'update forum 5' });
-    // 
-    // assert.response(app,
-    //   { url: '/5', method: 'DELETE' },
-    //   { body: 'destroy forum 5' });
+    assert.response(app,
+      { url: '/' },
+      { body: 'forum index' });
+    
+    assert.response(app,
+      { url: '/new' },
+      { body: 'new forum' });
+    
+    assert.response(app,
+      { url: '/', method: 'POST' },
+      { body: 'create forum' });
+    
+    assert.response(app,
+      { url: '/5' },
+      { body: 'show forum 5' });
+    
+    assert.response(app,
+      { url: '/5/edit' },
+      { body: 'edit forum 5' });
+    
+    assert.response(app,
+      { url: '/5', method: 'PUT' },
+      { body: 'update forum 5' });
+    
+    assert.response(app,
+      { url: '/5', method: 'DELETE' },
+      { body: 'destroy forum 5' });
   },
 
   'test app.resource() id option': function(){
