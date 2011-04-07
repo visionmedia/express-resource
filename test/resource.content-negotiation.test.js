@@ -31,6 +31,14 @@ module.exports = {
       { url: '/pets.json' },
       { body: '["tobi","jane","loki"]'
       , headers: { 'Content-Type': 'application/json' }});
+
+    assert.response(app,
+      { url: '/pets/1.json' },
+      { body: '"jane"' });
+
+    assert.response(app,
+      { url: '/pets/0.xml' },
+      { body: '<pet>tobi</pet>' });
   },
 
   'test nested content-negotiation': function(){

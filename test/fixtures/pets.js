@@ -14,4 +14,21 @@ exports.index = function(req, res){
     default:
       res.send(415);
   }
+};
+
+exports.show = function(req, res){
+  switch (req.format) {
+    case 'json':
+      res.end(JSON.stringify(req.pet));
+      break;
+    case 'xml':
+      res.end('<pet>' + req.pet + '</pet>');
+      break;
+    default:
+      res.send(415);
+  }
 }
+
+exports.load = function(id, fn){
+  fn(null, pets[id]);
+};
