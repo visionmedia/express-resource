@@ -61,10 +61,7 @@ Resource.prototype.map = function(method, path, fn){
  */
 
 Resource.prototype.defineDefaultAction = function(key, fn){
-  var app = this.app
-    , id = this.id
-    , name = this.base + (this.name || '')
-    , path = this.name ? name + '/' : '/';
+  var id = this.id
 
   switch (key) {
     case 'index':
