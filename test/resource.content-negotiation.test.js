@@ -9,27 +9,9 @@ var assert = require('assert')
 
 module.exports = {
   'test content-negotiation via extension': function(){
-    var app = express.createServer()
-      , pets = ['tobi', 'jane', 'loki'];
+    var app = express.createServer();
 
-    var actions = {
-      index: function(req, res){
-        switch (req.format) {
-          case 'json':
-            res.send(pets);
-            break;
-          case 'xml':
-            res.send('<pets>' + pets.map(function(pet){
-              return '<pet>' + pet + '</pet>';
-            }).join('') + '</pets>');
-            break;
-          default:
-            res.send(415);
-        }
-      }
-    };
-
-    app.resource('pets', actions, { format: 'json' });
+    app.resource('pets', require('./fixtures/pets'), { format: 'json' });
 
     assert.response(app,
       { url: '/pets.html' },
@@ -49,5 +31,18 @@ module.exports = {
       { url: '/pets.json' },
       { body: '["tobi","jane","loki"]'
       , headers: { 'Content-Type': 'application/json' }});
+  },
+
+  'test nested content-negotiation': function(){
+    var app = express.createServer()
+      , pets = ['tobi', 'jane', 'loki'];
+
+    var users = app.resource('users');
+    var pets = app.resource('pets', require('./fixtures/pets'));
+    users.add(pets);
+
+    assert.response(app,
+      { url: '/users/1/pets.json' },
+      { body: '["tobi","jane","loki"]' });
   }
 };
