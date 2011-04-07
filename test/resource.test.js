@@ -155,6 +155,10 @@ module.exports = {
     forum.add(thread);
 
     assert.response(app,
+      { url: '/forums/20' },
+      { status: 404 });
+
+    assert.response(app,
       { url: '/users' },
       { body: 'users' });
 
