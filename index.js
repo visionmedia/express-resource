@@ -30,7 +30,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.routes = {};
   actions = actions || {};
   this.format = actions.format;
-  var id = this.id = actions.id || this.defaultId;
+  this.id = actions.id || this.defaultId;
   this.param = ':' + this.id;
 
   // default actions
@@ -39,18 +39,34 @@ var Resource = module.exports = function Resource(name, actions, app) {
   }
 
   // auto-loader
-  if (actions.load) {
-    app.param(this.id, function(req, res, next){
-      actions.load(req.params[id], function(err, obj){
-        if (err) return next(err);
-        // TODO: ideally we should next() passed the
-        // route handler
-        if (null == obj) return res.send(404);
-        req[id] = obj;
-        next();
-      });
+  if (actions.load) this.load(actions.load);
+};
+
+/**
+ * Set the auto-load `fn`.
+ *
+ * @param {Function} fn
+ * @return {Resource} for chaining
+ * @api public
+ */
+
+Resource.prototype.load = function(fn){
+  var self = this
+    , id = this.id;
+
+  this.loadFunction = fn;
+  this.app.param(this.id, function(req, res, next){
+    fn(req.params[id], function(err, obj){
+      if (err) return next(err);
+      // TODO: ideally we should next() passed the
+      // route handler
+      if (null == obj) return res.send(404);
+      req[id] = obj;
+      next();
     });
-  }
+  });
+
+  return this;
 };
 
 /**

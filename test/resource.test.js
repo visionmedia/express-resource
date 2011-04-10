@@ -217,6 +217,22 @@ module.exports = {
       { body: 'Ferrets: Tobi rules' });
   },
   
+  'test .load(fn)': function(){
+    var app = express.createServer();
+    var Forum = require('./fixtures/forum').Forum;
+
+    var actions = { show: function(req, res){
+      res.end(req.forum.title);
+    }};
+
+    var forum = app.resource('forum', actions);
+    forum.load(Forum.get);
+
+    assert.response(app,
+      { url: '/forum/12' },
+      { body: 'Ferrets' });
+  },
+  
   'test auto-loading no resource': function(){
      var app = express.createServer();
 
