@@ -43,8 +43,8 @@ var Resource = module.exports = function Resource(name, actions, app) {
     app.param(this.id, function(req, res, next){
       actions.load(req.params[id], function(err, obj){
         if (err) return next(err);
-        // TODO: ideally we should next() passed all
-        // of the resource related routes
+        // TODO: ideally we should next() passed the
+        // route handler
         if (null == obj) return res.send(404);
         req[id] = obj;
         next();
