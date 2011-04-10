@@ -11,7 +11,7 @@ npm:
 
 ## Usage
 
- To get started simply `require('express-resource')`, and this module will monkey-patch the `express.Server`, enabling resourceful routing. A "resource" is simply an object, which defines one of more of the supported "actions" listed below:
+ To get started simply `require('express-resource')`, and this module will monkey-patch Express, enabling resourceful routing by providing the `app.resource()` method. A "resource" is simply an object, which defines one of more of the supported "actions" listed below:
 
     exports.index = function(req, res){
       res.send('forum index');
@@ -41,15 +41,7 @@ npm:
       res.send('destroy forum ' + req.params.id);
     };
 
-The _id_ option can be specified to prevent collisions:
-
-     exports.id = 'uid';
-
-     exports.destroy = function(req, res) {
-       res.send('destroy user ' + req.params.uid);
-     };
-
-The `app.resource()` method will create and return a new `Resource`:
+The `app.resource()` method returns a new `Resource` object, which can be used to further map pathnames, nest resources, and more.
 
     var express = require('express')
       , Resource = require('express-resource')
@@ -57,22 +49,21 @@ The `app.resource()` method will create and return a new `Resource`:
 
     app.resource('forums', require('./forum'));
 
-Actions are then mapped as follows (by default):
+## Default Action Mapping
 
-    GET     /forums           ->  index
-    GET     /forums/new       ->  new
-    POST    /forums           ->  create
-    GET     /forums/:id       ->  show
-    GET     /forums/:id/edit  ->  edit
-    PUT     /forums/:id       ->  update
-    DELETE  /forums/:id       ->  destroy
+Actions are then mapped as follows (by default), providing `req.params.forum` which contains the substring where ":forum" is shown below:
 
+    GET     /forums              ->  index
+    GET     /forums/new          ->  new
+    POST    /forums              ->  create
+    GET     /forums/:forum       ->  show
+    GET     /forums/:forum/edit  ->  edit
+    PUT     /forums/:forum       ->  update
+    DELETE  /forums/:forum       ->  destroy
+
+## Top-Level Resource
 
 Specify a top-level resource by omitting the resource name:
-
-    var express = require('express')
-      , Resource = require('express-resource')
-      , app = express.createServer();
 
     app.resource(require('./forum'));
 
@@ -85,9 +76,6 @@ Top-level actions are then mapped as follows (by default):
     GET     /:id/edit         ->  edit
     PUT     /:id              ->  update
     DELETE  /:id              ->  destroy
-
-
-__NOTE:__ this functionality will surely grow with time, and as data store clients evolve we can provide close integration.
 
 ## Running Tests
 
