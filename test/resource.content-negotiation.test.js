@@ -40,6 +40,22 @@ module.exports = {
       { url: '/pets/0.xml' },
       { body: '<pet>tobi</pet>' });
   },
+  
+  'test content-negotiation via format method': function(){
+    var app = express.createServer();
+
+    app.resource('pets', require('./fixtures/pets.format-methods'));
+
+    assert.response(app,
+      { url: '/pets.xml' },
+      { body: '<pets><pet>tobi</pet><pet>jane</pet><pet>loki</pet></pets>'
+      , headers: { 'Content-Type': 'application/xml' }});
+
+    assert.response(app,
+      { url: '/pets.json' },
+      { body: '["tobi","jane","loki"]'
+      , headers: { 'Content-Type': 'application/json' }});
+  },
 
   'test nested content-negotiation': function(){
     var app = express.createServer()
