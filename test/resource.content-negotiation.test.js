@@ -61,6 +61,26 @@ module.exports = {
       { body: 'Unsupported format', status: 415 });
   },
   
+  'test content-negotiation via format method without default': function(){
+    var app = express.createServer();
+
+    app.resource('pets', require('./fixtures/pets.format-methods-without-default'));
+
+    assert.response(app,
+      { url: '/pets.xml' },
+      { body: '<pets><pet>tobi</pet><pet>jane</pet><pet>loki</pet></pets>'
+      , headers: { 'Content-Type': 'application/xml' }});
+
+    assert.response(app,
+      { url: '/pets.json' },
+      { body: '["tobi","jane","loki"]'
+      , headers: { 'Content-Type': 'application/json' }});
+
+    assert.response(app,
+      { url: '/pets' },
+      { body: 'Unsupported Media Type', status: 415 });
+  },
+  
   'test nested content-negotiation': function(){
     var app = express.createServer()
       , pets = ['tobi', 'jane', 'loki'];
