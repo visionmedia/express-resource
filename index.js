@@ -90,8 +90,7 @@ Resource.prototype.map = function(method, path, fn){
   route += path;
   route += '.:format?';
 
-  // register the route so we may
-  // later remove it
+  // register the route so we may later remove it
   (this.routes[method] = this.routes[method] || {})[route] = {
       method: method
     , path: route
@@ -104,7 +103,7 @@ Resource.prototype.map = function(method, path, fn){
     req.format = req.params.format || self.format;
     if (req.format) res.contentType(req.format);
     if ('object' == typeof fn) {
-      if (req.format) {
+      if (req.format && fn[req.format]) {
         fn[req.format](req, res, next);
       } else if (fn.default) {
         fn.default(req, res, next);

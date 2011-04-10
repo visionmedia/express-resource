@@ -87,6 +87,7 @@ module.exports = {
     app.use(express.bodyParser());
 
     var pets = app.resource('pets');
+
     pets.get({
       json: function(req, res){
         res.send({ name: 'tobi' });
