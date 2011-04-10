@@ -77,7 +77,7 @@ Top-level actions are then mapped as follows (by default):
     PUT     /:id              ->  update
     DELETE  /:id              ->  destroy
 
-## Auto-Loaders
+## Auto-Loading
 
 Resources have the concept of "auto-loading" associated data. For example we can pass a "load" property along with our actions, which should invoke the callback function with an error, or the object such as a `User`:
 
