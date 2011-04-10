@@ -70,7 +70,7 @@ Resource.prototype.__defineGetter__('defaultId', function(){
  * Map http `method` and optional `path` to `fn`.
  *
  * @param {String} method
- * @param {String|Function} path
+ * @param {String|Function|Object} path
  * @param {Function} fn
  * @return {Resource} for chaining
  * @api public
@@ -78,8 +78,12 @@ Resource.prototype.__defineGetter__('defaultId', function(){
 
 Resource.prototype.map = function(method, path, fn){
   var self = this;
+
   if (method instanceof Resource) return this.add(method);
   if ('function' == typeof path) fn = path, path = '';
+  if ('object' == typeof path) fn = path, path = '';
+  if ('/' == path[0]) path = path.substr(1);
+
   method = method.toLowerCase();
 
   // setup route pathname
@@ -88,8 +92,7 @@ Resource.prototype.map = function(method, path, fn){
   route += path;
   route += '.:format?';
 
-  // register the route so we may
-  // later remove it
+  // register the route so we may later remove it
   (this.routes[method] = this.routes[method] || {})[route] = {
       method: method
     , path: route
@@ -101,7 +104,17 @@ Resource.prototype.map = function(method, path, fn){
   this.app[method](route, function(req, res, next){
     req.format = req.params.format || self.format;
     if (req.format) res.contentType(req.format);
-    fn(req, res, next);
+    if ('object' == typeof fn) {
+      if (req.format && fn[req.format]) {
+        fn[req.format](req, res, next);
+      } else if (fn.default) {
+        fn.default(req, res, next);
+      } else {
+        res.send(415);
+      }
+    } else {
+      fn(req, res, next);
+    }
   });
 
   return this;
@@ -180,7 +193,8 @@ Resource.prototype.mapDefaultAction = function(key, fn){
 
 express.router.methods.concat(['del', 'all']).forEach(function(method){
   Resource.prototype[method] = function(path, fn){
-    if ('function' == typeof path) fn = path, path = '';
+    if ('function' == typeof path
+      || 'object' == typeof path) fn = path, path = '';
     this.map(method, path, fn);
     return this;
   }
