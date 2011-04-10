@@ -27,7 +27,7 @@ exports.show = function(req, res){
     default:
       res.send(415);
   }
-}
+};
 
 exports.load = function(id, fn){
   fn(null, pets[id]);
