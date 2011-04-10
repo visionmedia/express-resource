@@ -86,7 +86,16 @@ module.exports = {
 
     app.use(express.bodyParser());
 
-    var pets = app.resource('pets');
+    var pets = app.resource('pets')
+      , toys = app.resource('toys');
+
+    toys.get({
+      json: function(req, res){
+        res.send(["ball"]);
+      }
+    });
+
+    pets.add(toys);
 
     pets.get({
       json: function(req, res){
@@ -95,8 +104,16 @@ module.exports = {
     });
 
     assert.response(app,
+      { url: '/pets/0/toys.json' },
+      { body: '["ball"]' });
+
+    assert.response(app,
       { url: '/pets.json' },
       { body: '{"name":"tobi"}' });
+
+    assert.response(app,
+      { url: '/pets' },
+      { status: 415 });
   },
   
   'test nested content-negotiation': function(){
