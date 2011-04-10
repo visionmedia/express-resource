@@ -2,18 +2,18 @@
 var pets = ['tobi', 'jane', 'loki'];
 
 exports.index = {
-  json: function(){
+  json: function(req, res){
     res.send(pets);
   },
 
-  xml: function(){
+  xml: function(req, res){
     res.send('<pets>' + pets.map(function(pet){
       return '<pet>' + pet + '</pet>';
     }).join('') + '</pets>');
   },
 
-  default: function(){
-    res.send(415);
+  default: function(req, res){
+    res.send('Unsupported format', 415);
   }
 };
 

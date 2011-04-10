@@ -55,8 +55,12 @@ module.exports = {
       { url: '/pets.json' },
       { body: '["tobi","jane","loki"]'
       , headers: { 'Content-Type': 'application/json' }});
-  },
 
+    assert.response(app,
+      { url: '/pets' },
+      { body: 'Unsupported format', status: 415 });
+  },
+  
   'test nested content-negotiation': function(){
     var app = express.createServer()
       , pets = ['tobi', 'jane', 'loki'];
