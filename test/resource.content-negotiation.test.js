@@ -81,6 +81,23 @@ module.exports = {
       { body: 'Unsupported Media Type', status: 415 });
   },
   
+  'test content-negotiation via map()': function(){
+    var app = express.createServer();
+
+    app.use(express.bodyParser());
+
+    var pets = app.resource('pets');
+    pets.get({
+      json: function(req, res){
+        res.send({ name: 'tobi' });
+      }
+    });
+
+    assert.response(app,
+      { url: '/pets.json' },
+      { body: '{"name":"tobi"}' });
+  },
+  
   'test nested content-negotiation': function(){
     var app = express.createServer()
       , pets = ['tobi', 'jane', 'loki'];
