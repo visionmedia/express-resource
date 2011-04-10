@@ -111,6 +111,14 @@ module.exports = {
     user.get(function(req, res){ res.end('tj'); });
     user.get('clone', function(req, res){ res.end('tj clone'); });
 
+    user.put('food/:name', function(req, res){
+      res.send('thanks for that ' + req.params.name);
+    });
+
+    assert.response(app,
+      { url: '/user/food/cake', method: 'PUT' },
+      { body: 'thanks for that cake' });
+
     assert.response(app,
       { url: '/user' },
       { body: 'tj' });
