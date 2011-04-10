@@ -106,6 +106,52 @@ Resources have the concept of "auto-loading" associated data. For example we can
 
   Now when we request `GET /forums/5/threads/12` both the `req.forum` object, and `req.thread` will be available to thread's _show_ action.
 
+## Content-Negotiation
+
+  Currently express-resource supports basic content-negotiation support utilizing extnames or "formats". This can currently be done two ways, first we may define actions as we normally would, and utilize the `req.format` property, and respond accordingly. The following would respond to `GET /pets.xml`, and `GET /pets.json`.
+  
+      var pets = ['tobi', 'jane', 'loki'];
+
+      exports.index = function(req, res){
+        switch (req.format) {
+          case 'json':
+            res.send(pets);
+            break;
+          case 'xml':
+            res.send('<pets>' + pets.map(function(pet){
+              return '<pet>' + pet + '</pet>';
+            }).join('') + '</pets>');
+            break;
+          default:
+            res.send(415);
+        }
+      };
+
+ The following is equivalent, however we separate the logic into several callbacks, each representing a format. 
+ 
+     exports.index = {
+       json: function(req, res){
+         res.send(pets);
+       },
+
+       xml: function(req, res){
+         res.send('<pets>' + pets.map(function(pet){
+           return '<pet>' + pet + '</pet>';
+         }).join('') + '</pets>');
+       }
+     };
+
+ We may also provide a `default` format, invoked when either no extension is given, or one that does not match another method is given:
+ 
+ 
+     exports.default = function(req, res){
+       res.send('Unsupported format "' + req.format + '"', 415);
+     };
+
+ To assign a default format to an existing method, we can provide the `format` option to the resource. With the following definition both `GET /users/5` and `GET /users/5.json` will invoke the `show.json` action, or `show` with `req.format = 'json'`.
+ 
+     app.resource('users', actions, { format: 'json' });
+
 ## Running Tests
 
 First make sure you have the submodules:
