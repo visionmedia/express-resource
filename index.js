@@ -82,6 +82,8 @@ Resource.prototype.map = function(method, path, fn){
   if (method instanceof Resource) return this.add(method);
   if ('function' == typeof path) fn = path, path = '';
   if ('object' == typeof path) fn = path, path = '';
+  if ('/' == path[0]) path = path.substr(1);
+
   method = method.toLowerCase();
 
   // setup route pathname

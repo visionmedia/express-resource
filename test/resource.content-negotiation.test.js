@@ -95,6 +95,10 @@ module.exports = {
       }
     });
 
+    toys.get('/types', function(req, res){
+      res.send(["balls", "platforms", "tunnels"]);
+    });
+
     pets.add(toys);
 
     pets.get({
@@ -102,6 +106,10 @@ module.exports = {
         res.send({ name: 'tobi' });
       }
     });
+
+    assert.response(app,
+      { url: '/pets/0/toys/types' },
+      { body: '["balls","platforms","tunnels"]' });
 
     assert.response(app,
       { url: '/pets/0/toys.json' },
