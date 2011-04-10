@@ -77,6 +77,26 @@ Top-level actions are then mapped as follows (by default):
     PUT     /:id              ->  update
     DELETE  /:id              ->  destroy
 
+## Auto-Loaders
+
+Resources have the concept of "auto-loading" associated data. For example we can pass a "load" property along with our actions, which should invoke the callback function with an error, or the object such as a `User`:
+
+
+      User.load = function(id, fn) {
+        fn(null, users[id]);
+      };
+      
+      app.resource('users', { show: ..., load: User.load });
+      
+ With the auto-loader defined, the `req.user` object will be available now be available to the actions automatically. We may pass the "load" option as the third param as well, although this is equivalent to above, but allows you to either export ".load" along with your actions, or passing it explicitly:
+ 
+     app.resource('users', require('./user'), { load: User.load });
+
+ Finally we can utilize the `Resource#load(fn)` method, which again is functionally equivalent:
+ 
+     var user = app.resource('users', require('./user'));
+     user.load(User.load);
+
 ## Running Tests
 
 First make sure you have the submodules:
