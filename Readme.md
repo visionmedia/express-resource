@@ -97,6 +97,15 @@ Resources have the concept of "auto-loading" associated data. For example we can
      var user = app.resource('users', require('./user'));
      user.load(User.load);
 
+  This functionality works when nesting resources as well, for example suppose we have a forum, which contains threads, our setup may look something like below:
+  
+      var forums = app.resource('forums', require('resources/forums'), { load: Forum.get });
+      var threads = app.resources('threads', require('resources/threads'), { load: Thread.get });
+
+      forums.add(threads);
+
+  Now when we request `GET /forums/5/threads/12` both the `req.forum` object, and `req.thread` will be available to thread's _show_ action.
+
 ## Running Tests
 
 First make sure you have the submodules:
