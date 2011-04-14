@@ -11,6 +11,7 @@
  */
 
 var express = require('express')
+  , join = require('path').join
   , lingo = require('lingo')
   , en = lingo.en;
 
@@ -93,26 +94,27 @@ Resource.prototype.__defineGetter__('defaultId', function(){
  */
 
 Resource.prototype.map = function(method, path, fn){
-  var self = this;
+  var self = this
+    , orig = path;
 
   if (method instanceof Resource) return this.add(method);
   if ('function' == typeof path) fn = path, path = '';
   if ('object' == typeof path) fn = path, path = '';
   if ('/' == path[0]) path = path.substr(1);
-
+  else path = join(this.param, path);
   method = method.toLowerCase();
 
   // setup route pathname
   var route = this.base + (this.name || '');
-  route += (this.name && path) ? '/' : '';
+  if (this.name && path) route += '/';
   route += path;
-  route += '.:format?';
+  if ('get' == method) route += '.:format?';
 
   // register the route so we may later remove it
   (this.routes[method] = this.routes[method] || {})[route] = {
       method: method
     , path: route
-    , orig: path
+    , orig: orig
     , fn: fn
   };
 
@@ -176,29 +178,27 @@ Resource.prototype.add = function(resource){
  */
 
 Resource.prototype.mapDefaultAction = function(key, fn){
-  var id = this.param;
-
   switch (key) {
     case 'index':
-      this.get(fn);
+      this.get('/', fn);
       break;
     case 'new':
-      this.get('new', fn);
+      this.get('/new', fn);
       break;
     case 'create':
-      this.post(fn);
+      this.post('/', fn);
       break;
     case 'show':
-      this.get(id, fn);
+      this.get(fn);
       break;
     case 'edit':
-      this.get(id + '/edit', fn);
+      this.get('edit', fn);
       break;
     case 'update':
-      this.put(id, fn);
+      this.put(fn);
       break;
     case 'destroy':
-      this.del(id, fn);
+      this.del(fn);
       break;
   }
 };

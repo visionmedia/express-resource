@@ -107,25 +107,35 @@ module.exports = {
   'test http methods': function(){
     var app = express.createServer();
 
-    var user = app.resource('user');
-    user.get(function(req, res){ res.end('tj'); });
-    user.get('clone', function(req, res){ res.end('tj clone'); });
+    var users = app.resource('users');
 
-    user.put('food/:name', function(req, res){
-      res.send('thanks for that ' + req.params.name);
+    users.get('/', function(req, res){
+      res.send('index');
+    }).get('/online', function(req, res){
+      res.send('users online');
+    });
+
+    users.get(function(req, res){
+      res.send(req.params.user);
+    }).get('online', function(req, res){
+      res.send('no');
     });
 
     assert.response(app,
-      { url: '/user/food/cake', method: 'PUT' },
-      { body: 'thanks for that cake' });
+      { url: '/users/online' },
+      { body: 'users online' });
 
     assert.response(app,
-      { url: '/user' },
-      { body: 'tj' });
+      { url: '/users' },
+      { body: 'index' });
 
     assert.response(app,
-      { url: '/user/clone' },
-      { body: 'tj clone' });
+      { url: '/users/0' },
+      { body: '0' });
+
+    assert.response(app,
+      { url: '/users/0/online' },
+      { body: 'no' });
   },
   
   'test shallow nesting': function(){
