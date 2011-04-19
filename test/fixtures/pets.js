@@ -12,7 +12,7 @@ exports.index = function(req, res){
       }).join('') + '</pets>');
       break;
     default:
-      res.send(415);
+      res.send(406);
   }
 };
 
@@ -25,7 +25,7 @@ exports.show = function(req, res){
       res.end('<pet>' + req.pet + '</pet>');
       break;
     default:
-      res.send(415);
+      res.send(406);
   }
 };
 

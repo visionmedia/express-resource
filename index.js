@@ -128,7 +128,7 @@ Resource.prototype.map = function(method, path, fn){
       } else if (fn.default) {
         fn.default(req, res, next);
       } else {
-        res.send(415);
+        res.send(406);
       }
     } else {
       fn(req, res, next);

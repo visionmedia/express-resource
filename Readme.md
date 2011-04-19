@@ -123,7 +123,7 @@ Resources have the concept of "auto-loading" associated data. For example we can
             }).join('') + '</pets>');
             break;
           default:
-            res.send(415);
+            res.send(406);
         }
       };
 
@@ -145,7 +145,7 @@ Resources have the concept of "auto-loading" associated data. For example we can
  
  
      exports.default = function(req, res){
-       res.send('Unsupported format "' + req.format + '"', 415);
+       res.send('Unsupported format "' + req.format + '"', 406);
      };
 
  To assign a default format to an existing method, we can provide the `format` option to the resource. With the following definition both `GET /users/5` and `GET /users/5.json` will invoke the `show.json` action, or `show` with `req.format = 'json'`.

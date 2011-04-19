@@ -15,8 +15,8 @@ module.exports = {
   
     assert.response(app,
       { url: '/pets.html' },
-      { body: 'Unsupported Media Type'
-      , status : 415 });
+      { body: 'Not Acceptable'
+      , status : 406 });
   
     assert.response(app,
       { url: '/pets' },
@@ -58,7 +58,7 @@ module.exports = {
   
     assert.response(app,
       { url: '/pets' },
-      { body: 'Unsupported format', status: 415 });
+      { body: 'Unsupported format', status: 406 });
   },
   
   'test content-negotiation via format method without default': function(){
@@ -78,7 +78,7 @@ module.exports = {
   
     assert.response(app,
       { url: '/pets' },
-      { body: 'Unsupported Media Type', status: 415 });
+      { body: 'Not Acceptable', status: 406 });
   },
   
   'test content-negotiation via map()': function(){
@@ -132,7 +132,7 @@ module.exports = {
       
     assert.response(app,
       { url: '/pets' },
-      { status: 415 });
+      { status: 406 });
   },
   
   'test nested content-negotiation': function(){

@@ -13,7 +13,7 @@ exports.index = {
   },
 
   default: function(req, res){
-    res.send('Unsupported format', 415);
+    res.send('Unsupported format', 406);
   }
 };
 
