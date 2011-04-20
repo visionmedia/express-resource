@@ -4,7 +4,7 @@ var assert = require('assert')
 
 var app = express.createServer();
 
-var ret = app.resource('forums', require('./fixtures/forum'));
+var ret = app.resource('profile', require('./fixtures/profile'));
 
 
 Resource.prototype.list_routes = function() {

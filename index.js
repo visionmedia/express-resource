@@ -30,8 +30,8 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.routes = {};
   actions = actions || {};
   this.format = actions.format;
-  this.id = actions.id || this.defaultId;
-  this.param = ':' + this.id;
+  this.id = actions.id == null? this.defaultId: actions.id;
+  this.param = this.id == ''? '': ':' + this.id;
 
   // default actions
   for (var key in actions) {
