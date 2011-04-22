@@ -199,10 +199,10 @@ module.exports = {
     }};
 
     actions.load = Forum.get;
-    var forum = app.resource('forum', actions);
+    var forum = app.resource('forums', actions);
 
     assert.response(app,
-      { url: '/forum/12' },
+      { url: '/forums/12' },
       { body: 'Ferrets' });
   },
   
@@ -215,13 +215,13 @@ module.exports = {
       res.end(req.forum.title + ': ' + req.thread.title);
     }};
 
-    var forum = app.resource('forum', { load: Forum.get });
-    var threads = app.resource('thread', actions, { load: Thread.get });
+    var forum = app.resource('forums', { load: Forum.get });
+    var threads = app.resource('threads', actions, { load: Thread.get });
 
     forum.add(threads);
 
     assert.response(app,
-      { url: '/forum/12/thread/1' },
+      { url: '/forums/12/threads/1' },
       { body: 'Ferrets: Tobi rules' });
   },
   
@@ -233,11 +233,11 @@ module.exports = {
       res.end(req.forum.title);
     }};
 
-    var forum = app.resource('forum', actions);
+    var forum = app.resource('forums', actions);
     forum.load(Forum.get);
 
     assert.response(app,
-      { url: '/forum/12' },
+      { url: '/forums/12' },
       { body: 'Ferrets' });
   },
   

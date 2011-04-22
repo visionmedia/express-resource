@@ -23,5 +23,5 @@ exports.destroy = function(req, res){
   res.send('destroy profile');
 };
 
-exports.id = '';
+// exports.id = '';
 

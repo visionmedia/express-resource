@@ -29,6 +29,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.app = app;
   this.routes = {};
   actions = actions || {};
+	if (name && lingo.en.isSingular(name)) actions.id = (actions.id || '');
   this.format = actions.format;
   this.id = actions.id == null? this.defaultId: actions.id;
   this.param = this.id == ''? '': ':' + this.id;
