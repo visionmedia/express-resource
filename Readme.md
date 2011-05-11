@@ -1,4 +1,3 @@
-
 # Express Resource
 
   express-resource provides resourceful routing to express.
@@ -26,19 +25,19 @@ npm:
     };
 
     exports.show = function(req, res){
-      res.send('show forum ' + req.params.id);
+      res.send('show forum ' + req.params.forum);
     };
 
     exports.edit = function(req, res){
-      res.send('edit forum ' + req.params.id);
+      res.send('edit forum ' + req.params.forum);
     };
 
     exports.update = function(req, res){
-      res.send('update forum ' + req.params.id);
+      res.send('update forum ' + req.params.forum;
     };
 
     exports.destroy = function(req, res){
-      res.send('destroy forum ' + req.params.id);
+      res.send('destroy forum ' + req.params.forum);
     };
 
 The `app.resource()` method returns a new `Resource` object, which can be used to further map pathnames, nest resources, and more.
