@@ -1,4 +1,3 @@
-
 /*!
  * Express - Resource
  * Copyright(c) 2010-2011 TJ Holowaychuk <tj@vision-media.ca>
@@ -25,11 +24,13 @@ var express = require('express')
  */
 
 var Resource = module.exports = function Resource(name, actions, app) {
-  this.base = '/';
   this.name = name;
   this.app = app;
   this.routes = {};
   actions = actions || {};
+  this.base = actions.base || '/';
+  if(this.base[this.base.length-1] != '/')
+    this.base += '/';
   this.format = actions.format;
   this.id = actions.id || this.defaultId;
   this.param = ':' + this.id;
