@@ -33,7 +33,7 @@ npm:
     };
 
     exports.update = function(req, res){
-      res.send('update forum ' + req.params.forum;
+      res.send('update forum ' + req.params.forum);
     };
 
     exports.destroy = function(req, res){
