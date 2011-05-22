@@ -39,6 +39,14 @@ module.exports = {
     assert.response(app,
       { url: '/pets/0.xml' },
       { body: '<pet>tobi</pet>' });
+
+    assert.response(app,
+      { url: '/pets/0.xml', method: 'DELETE' },
+      { body: '<message>pet removed</message>' });
+
+    assert.response(app,
+      { url: '/pets/0.json', method: 'DELETE' },
+      { body: '{"message":"pet removed"}' });
   },
   
   'test content-negotiation via format method': function(){

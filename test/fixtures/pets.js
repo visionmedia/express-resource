@@ -29,6 +29,19 @@ exports.show = function(req, res){
   }
 };
 
+exports.destroy = function(req, res){
+  switch (req.format) {
+    case 'json':
+      res.send({ message: 'pet removed' });
+      break;
+    case 'xml':
+      res.send('<message>pet removed</message>');
+      break;
+    default:
+      res.send(406);
+  }
+};
+
 exports.load = function(id, fn){
   fn(null, pets[id]);
 };

@@ -108,7 +108,7 @@ Resource.prototype.map = function(method, path, fn){
   var route = this.base + (this.name || '');
   if (this.name && path) route += '/';
   route += path;
-  if ('get' == method) route += '.:format?';
+  route += '.:format?';
 
   // register the route so we may later remove it
   (this.routes[method] = this.routes[method] || {})[route] = {
