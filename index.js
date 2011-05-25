@@ -1,3 +1,4 @@
+
 /*!
  * Express - Resource
  * Copyright(c) 2010-2011 TJ Holowaychuk <tj@vision-media.ca>

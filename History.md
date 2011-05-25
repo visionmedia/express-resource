@@ -1,4 +1,10 @@
 
+0.2.1 / 2011-05-25 
+==================
+
+  * Fixed for express 2.3.9. Closes #18
+  * Added better support for mapping your own actions. Closes #7
+
 0.2.0 / 2011-04-09 
 ==================
 
