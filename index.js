@@ -148,7 +148,7 @@ Resource.prototype.map = function(method, path, fn){
  */
 
 Resource.prototype.add = function(resource){
-  var router = this.app.router
+  var app = this.app
     , routes
     , route;
 
@@ -161,7 +161,7 @@ Resource.prototype.add = function(resource){
     for (var key in routes) {
       route = routes[key];
       delete routes[key];
-      router.remove(key, route.method);
+      app[method](key).remove();
       resource.map(route.method, route.orig, route.fn);
     }
   }
