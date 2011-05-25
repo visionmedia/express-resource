@@ -99,7 +99,7 @@ Resources have the concept of "auto-loading" associated data. For example we can
   This functionality works when nesting resources as well, for example suppose we have a forum, which contains threads, our setup may look something like below:
   
       var forums = app.resource('forums', require('resources/forums'), { load: Forum.get });
-      var threads = app.resources('threads', require('resources/threads'), { load: Thread.get });
+      var threads = app.resource('threads', require('resources/threads'), { load: Thread.get });
 
       forums.add(threads);
 
