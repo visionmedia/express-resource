@@ -58,14 +58,21 @@ Resource.prototype.load = function(fn){
 
   this.loadFunction = fn;
   this.app.param(this.id, function(req, res, next){
-    fn(req.params[id], function(err, obj){
+    var callback = function(err, obj){
       if (err) return next(err);
       // TODO: ideally we should next() passed the
       // route handler
       if (null == obj) return res.send(404);
       req[id] = obj;
       next();
-    });
+    };
+    
+    // Maintain backward compatibility
+    if (fn.length === 2) {
+      fn(req.params[id], callback);
+    } else {
+      fn(req, req.params[id], callback);
+    }
   });
 
   return this;
