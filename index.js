@@ -58,7 +58,7 @@ Resource.prototype.load = function(fn){
 
   this.loadFunction = fn;
   this.app.param(this.id, function(req, res, next){
-    var callback = function(err, obj){
+    function callback(err, obj){
       if (err) return next(err);
       // TODO: ideally we should next() passed the
       // route handler
@@ -68,7 +68,7 @@ Resource.prototype.load = function(fn){
     };
     
     // Maintain backward compatibility
-    if (fn.length === 2) {
+    if (2 == fn.length) {
       fn(req.params[id], callback);
     } else {
       fn(req, req.params[id], callback);
