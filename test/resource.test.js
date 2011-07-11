@@ -264,5 +264,32 @@ module.exports = {
      assert.response(app,
       { url: '/pets/0' },
       { body: 'Not Found', status: 404 });
+  },
+  
+  'test custom route configuration': function(){
+    var app = express.createServer();
+    var Forum = require('./fixtures/forum').Forum;
+    
+    function load(id, fn) { fn(null, "User"); }
+    var actions = {
+      login: function(req, res){
+        res.end('login');
+      },
+      logout: function(req, res){
+        res.end('logout');
+      }
+    };
+    
+    var users = app.resource('users', actions, { load: load });
+    users.map('get', 'login', actions.login);
+    users.map('get', '/logout', actions.logout);
+    
+    assert.response(app,
+      { url: '/users/1/login' },
+      { body: 'login' });
+      
+    assert.response(app, 
+      { url: '/users/logout' },
+      { body: 'logout' });    
   }
 };
