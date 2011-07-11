@@ -36,8 +36,18 @@ var user = {
     delete users[req.params.user];
     res.send('removed ' + req.params.user);
   }
+  
+  login: function(req, res){
+    res.send('logged in ' + req.params.user);
+  }
+  
+  logout: function(req, res){
+    res.send('logged out');
+  }
 };
 
-app.resource('users', user);
+var userResource = app.resource('users', user);
+userResource.map('get', 'login', user.login);    // relative path accesses element (/users/1/login)
+userResource.map('get', '/logout', user.logout); // absolute path accesses collection (/users/logout)
 
 app.listen(3000);
