@@ -268,7 +268,7 @@ Resource.prototype.createRouteHelper = function(mapPath, route) {
   this.paths.push(methodName);
     
   // Add to the app.resource object
-  resourceAccess.path[methodName] = resourceAccess.path[methodName] || function() {
+  resourceAccess.path[methodName + '_path'] = resourceAccess.path[methodName] || function() {
     var localRoute = route;
     Array.prototype.forEach.call(arguments, function(arg) {
       localRoute = localRoute.replace(/:\w+/, arg[resourceAccess.path.idField]);

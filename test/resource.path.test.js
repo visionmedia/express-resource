@@ -12,13 +12,13 @@ module.exports = {
     var app = express.createServer();
     var ret = app.resource('forums', require('./fixtures/forum'));    
     
-    assert.strictEqual(app.resource.path.forums(), '/forums');
-    assert.strictEqual(app.resource.path.new_forum(), '/forums/new');
-    assert.strictEqual(app.resource.path.forum({id: 5}), '/forums/5');    
+    assert.strictEqual(app.resource.path.forums_path(), '/forums');
+    assert.strictEqual(app.resource.path.new_forum_path(), '/forums/new');
+    assert.strictEqual(app.resource.path.forum_path({id: 5}), '/forums/5');    
 
-    assert.strictEqual(app.resource.path.forum({id: 10}), '/forums/10');    
+    assert.strictEqual(app.resource.path.forum_path({id: 10}), '/forums/10');    
     
-    assert.strictEqual(app.resource.path.edit_forum({id: 5}), '/forums/5/edit');
+    assert.strictEqual(app.resource.path.edit_forum_path({id: 5}), '/forums/5/edit');
   },  
   'test shallow nesting': function(){
     var app = express.createServer();
@@ -30,15 +30,15 @@ module.exports = {
     var thread = app.resource('threads', require('./fixtures/thread'));
     forum.map(thread);
     
-    assert.strictEqual(app.resource.path.forums(), '/forums');
-    assert.strictEqual(app.resource.path.new_forum(), '/forums/new');
-    assert.strictEqual(app.resource.path.forum(forumObj), '/forums/5');    
-    assert.strictEqual(app.resource.path.edit_forum(forumObj), '/forums/5/edit');
+    assert.strictEqual(app.resource.path.forums_path(), '/forums');
+    assert.strictEqual(app.resource.path.new_forum_path(), '/forums/new');
+    assert.strictEqual(app.resource.path.forum_path(forumObj), '/forums/5');    
+    assert.strictEqual(app.resource.path.edit_forum_path(forumObj), '/forums/5/edit');
     
-    assert.strictEqual(app.resource.path.forum_threads(forumObj), '/forums/5/threads');
-    assert.strictEqual(app.resource.path.new_forum_thread(forumObj), '/forums/5/threads/new');
-    assert.strictEqual(app.resource.path.forum_thread(forumObj, threadObj), '/forums/5/threads/50');
-    assert.strictEqual(app.resource.path.edit_forum_thread(forumObj, threadObj), '/forums/5/threads/50/edit');    
+    assert.strictEqual(app.resource.path.forum_threads_path(forumObj), '/forums/5/threads');
+    assert.strictEqual(app.resource.path.new_forum_thread_path(forumObj), '/forums/5/threads/new');
+    assert.strictEqual(app.resource.path.forum_thread_path(forumObj, threadObj), '/forums/5/threads/50');
+    assert.strictEqual(app.resource.path.edit_forum_thread_path(forumObj, threadObj), '/forums/5/threads/50/edit');    
   },
   'test top level resource nesting': function(){
     var app = express.createServer();
@@ -50,15 +50,15 @@ module.exports = {
     var thread = app.resource('threads', require('./fixtures/thread'));
     forum.map(thread);
     
-    assert.strictEqual(app.resource.path.roots(), '/');
-    assert.strictEqual(app.resource.path.new_root(), '/new');
-    assert.strictEqual(app.resource.path.root(forumObj), '/5');    
-    assert.strictEqual(app.resource.path.edit_root(forumObj), '/5/edit');
+    assert.strictEqual(app.resource.path.roots_path(), '/');
+    assert.strictEqual(app.resource.path.new_root_path(), '/new');
+    assert.strictEqual(app.resource.path.root_path(forumObj), '/5');    
+    assert.strictEqual(app.resource.path.edit_root_path(forumObj), '/5/edit');
     
-    assert.strictEqual(app.resource.path.root_threads(forumObj), '/5/threads');
-    assert.strictEqual(app.resource.path.new_root_thread(forumObj), '/5/threads/new');
-    assert.strictEqual(app.resource.path.root_thread(forumObj, threadObj), '/5/threads/50');
-    assert.strictEqual(app.resource.path.edit_root_thread(forumObj, threadObj), '/5/threads/50/edit');    
+    assert.strictEqual(app.resource.path.root_threads_path(forumObj), '/5/threads');
+    assert.strictEqual(app.resource.path.new_root_thread_path(forumObj), '/5/threads/new');
+    assert.strictEqual(app.resource.path.root_thread_path(forumObj, threadObj), '/5/threads/50');
+    assert.strictEqual(app.resource.path.edit_root_thread_path(forumObj, threadObj), '/5/threads/50/edit');    
   },
   'test deep resource nesting': function(){
     var app = express.createServer();
@@ -77,17 +77,17 @@ module.exports = {
     var ret = forum.add(thread);
     ret.should.equal(forum);
     
-    assert.strictEqual(app.resource.path.users(), '/users');
+    assert.strictEqual(app.resource.path.users_path(), '/users');
     
-    assert.strictEqual(app.resource.path.user_forums(userObj), '/users/1/forums');
-    assert.strictEqual(app.resource.path.new_user_forum(userObj), '/users/1/forums/new');
-    assert.strictEqual(app.resource.path.user_forum(userObj, forumObj), '/users/1/forums/5');    
-    assert.strictEqual(app.resource.path.edit_user_forum(userObj, forumObj), '/users/1/forums/5/edit');
+    assert.strictEqual(app.resource.path.user_forums_path(userObj), '/users/1/forums');
+    assert.strictEqual(app.resource.path.new_user_forum_path(userObj), '/users/1/forums/new');
+    assert.strictEqual(app.resource.path.user_forum_path(userObj, forumObj), '/users/1/forums/5');    
+    assert.strictEqual(app.resource.path.edit_user_forum_path(userObj, forumObj), '/users/1/forums/5/edit');
     
-    assert.strictEqual(app.resource.path.user_forum_threads(userObj, forumObj), '/users/1/forums/5/threads');
-    assert.strictEqual(app.resource.path.new_user_forum_thread(userObj, forumObj), '/users/1/forums/5/threads/new');
-    assert.strictEqual(app.resource.path.user_forum_thread(userObj, forumObj, threadObj), '/users/1/forums/5/threads/50');
-    assert.strictEqual(app.resource.path.edit_user_forum_thread(userObj, forumObj, threadObj), '/users/1/forums/5/threads/50/edit');    
+    assert.strictEqual(app.resource.path.user_forum_threads_path(userObj, forumObj), '/users/1/forums/5/threads');
+    assert.strictEqual(app.resource.path.new_user_forum_thread_path(userObj, forumObj), '/users/1/forums/5/threads/new');
+    assert.strictEqual(app.resource.path.user_forum_thread_path(userObj, forumObj, threadObj), '/users/1/forums/5/threads/50');
+    assert.strictEqual(app.resource.path.edit_user_forum_thread_path(userObj, forumObj, threadObj), '/users/1/forums/5/threads/50/edit');    
   },  
   'test resource with custom actions': function(){
     var app = express.createServer();
@@ -105,8 +105,8 @@ module.exports = {
     ret.map('get', 'lock', actions.lock);
     ret.map('get', '/design', actions.design);
      
-    assert.strictEqual(app.resource.path.design_forums(), '/forums/design');
-    assert.strictEqual(app.resource.path.lock_forum({id: 5}), '/forums/5/lock');
+    assert.strictEqual(app.resource.path.design_forums_path(), '/forums/design');
+    assert.strictEqual(app.resource.path.lock_forum_path({id: 5}), '/forums/5/lock');
   },
   'test resource with custom id field': function(){
     var app = express.createServer();
@@ -116,8 +116,8 @@ module.exports = {
     // to be reset for each test.  If this is too confusing, we could change to set in on a per-resource basis. 
     app.resource.path.idField = '_id';
 
-    assert.strictEqual(app.resource.path.forum({_id: 5}), '/forums/5');    
-    assert.strictEqual(app.resource.path.edit_forum({_id: 5}), '/forums/5/edit');
+    assert.strictEqual(app.resource.path.forum_path({_id: 5}), '/forums/5');    
+    assert.strictEqual(app.resource.path.edit_forum_path({_id: 5}), '/forums/5/edit');
   },  
   
 };
