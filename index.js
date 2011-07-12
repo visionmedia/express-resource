@@ -228,6 +228,8 @@ Resource.prototype.mapDefaultAction = function(key, fn){
  
 Resource.prototype.createRouteHelper = function(mapPath, route) {
   resourceAccess.path = resourceAccess.path || {};
+  resourceAccess.path.idField = resourceAccess.path.idField || 'id';
+  
   var methodName = this.name || "roots";
   var argCount = 0;
   
@@ -266,7 +268,7 @@ Resource.prototype.createRouteHelper = function(mapPath, route) {
   resourceAccess.path[methodName] = resourceAccess.path[methodName] || function() {
     var localRoute = route;
     Array.prototype.forEach.call(arguments, function(arg) {
-      localRoute = localRoute.replace(/:\w+/, arg['id']);
+      localRoute = localRoute.replace(/:\w+/, arg[resourceAccess.path.idField]);
     });
     return localRoute;
   };

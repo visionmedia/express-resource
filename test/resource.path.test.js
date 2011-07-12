@@ -89,5 +89,16 @@ module.exports = {
     assert.strictEqual(app.resource.path.user_forum_thread(userObj, forumObj, threadObj), '/users/1/forums/5/threads/50');
     assert.strictEqual(app.resource.path.edit_user_forum_thread(userObj, forumObj, threadObj), '/users/1/forums/5/threads/50/edit');    
   },  
+  'test resource with custom id field': function(){
+    var app = express.createServer();
+    var ret = app.resource('forums', require('./fixtures/forum'));    
+
+    // NOTE: because this is set across all resources, this test should be run last or it will need
+    // to be reset for each test.  If this is too confusing, we could change to set in on a per-resource basis. 
+    app.resource.path.idField = '_id';
+
+    assert.strictEqual(app.resource.path.forum({_id: 5}), '/forums/5');    
+    assert.strictEqual(app.resource.path.edit_forum({_id: 5}), '/forums/5/edit');
+  },  
   
 };
