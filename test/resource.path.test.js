@@ -89,6 +89,25 @@ module.exports = {
     assert.strictEqual(app.resource.path.user_forum_thread(userObj, forumObj, threadObj), '/users/1/forums/5/threads/50');
     assert.strictEqual(app.resource.path.edit_user_forum_thread(userObj, forumObj, threadObj), '/users/1/forums/5/threads/50/edit');    
   },  
+  'test resource with custom actions': function(){
+    var app = express.createServer();
+    var ret = app.resource('forums', require('./fixtures/forum'));   
+    
+    var actions = {
+      lock: function(req, res){
+        res.end('login');
+      },
+      design: function(req, res){
+        res.end('logout');
+      }
+    };
+
+    ret.map('get', 'lock', actions.lock);
+    ret.map('get', '/design', actions.design);
+     
+    assert.strictEqual(app.resource.path.design_forums(), '/forums/design');
+    assert.strictEqual(app.resource.path.lock_forum({id: 5}), '/forums/5/lock');
+  },
   'test resource with custom id field': function(){
     var app = express.createServer();
     var ret = app.resource('forums', require('./fixtures/forum'));    

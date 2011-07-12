@@ -258,12 +258,15 @@ Resource.prototype.createRouteHelper = function(mapPath, route) {
       methodName = actionName + '_' + methodName;
     }
     argCount++;
+  } else if (mapPath.length > 0) {
+    // custom collection action
+    methodName = mapPath + '_' + methodName;
   }
   
   // Add paths to this resource so we can remove them later if we become nested (see #add)
   this.paths = this.paths || [];
   this.paths.push(methodName);
-  
+    
   // Add to the app.resource object
   resourceAccess.path[methodName] = resourceAccess.path[methodName] || function() {
     var localRoute = route;
