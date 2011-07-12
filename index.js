@@ -264,10 +264,11 @@ Resource.prototype.createRouteHelper = function(mapPath, route) {
   
   // Add to the app.resource object
   resourceAccess.path[methodName] = resourceAccess.path[methodName] || function() {
+    var localRoute = route;
     Array.prototype.forEach.call(arguments, function(arg) {
-      route = route.replace(/:\w+/, arg['id']);
+      localRoute = localRoute.replace(/:\w+/, arg['id']);
     });
-    return route;
+    return localRoute;
   };
 }
 

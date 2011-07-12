@@ -15,8 +15,11 @@ module.exports = {
     assert.strictEqual(app.resource.path.forums(), '/forums');
     assert.strictEqual(app.resource.path.new_forum(), '/forums/new');
     assert.strictEqual(app.resource.path.forum({id: 5}), '/forums/5');    
+
+    assert.strictEqual(app.resource.path.forum({id: 10}), '/forums/10');    
+    
     assert.strictEqual(app.resource.path.edit_forum({id: 5}), '/forums/5/edit');
-  },
+  },  
   'test shallow nesting': function(){
     var app = express.createServer();
 
