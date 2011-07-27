@@ -271,7 +271,8 @@ Resource.prototype.createRouteHelper = function(mapPath, route) {
   resourceAccess.path[methodName + '_path'] = resourceAccess.path[methodName] || function() {
     var localRoute = route;
     Array.prototype.forEach.call(arguments, function(arg) {
-      localRoute = localRoute.replace(/:\w+/, arg[resourceAccess.path.idField]);
+      var id = arg[resourceAccess.path.idField] || arg; 
+      localRoute = localRoute.replace(/:\w+/, id);
     });
     return localRoute;
   };

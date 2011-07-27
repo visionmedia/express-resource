@@ -108,6 +108,16 @@ module.exports = {
     assert.strictEqual(app.resource.path.design_forums_path(), '/forums/design');
     assert.strictEqual(app.resource.path.lock_forum_path({id: 5}), '/forums/5/lock');
   },
+  'test resource with direct id value': function(){
+    var app = express.createServer();
+    var ret = app.resource('forums', require('./fixtures/forum'));    
+
+    assert.strictEqual(app.resource.path.forum_path(5), '/forums/5');    
+    assert.strictEqual(app.resource.path.edit_forum_path(5), '/forums/5/edit');
+    
+    assert.strictEqual(app.resource.path.forum_path("5"), '/forums/5');    
+    assert.strictEqual(app.resource.path.edit_forum_path("5"), '/forums/5/edit');
+  },  
   'test resource with custom id field': function(){
     var app = express.createServer();
     var ret = app.resource('forums', require('./fixtures/forum'));    
