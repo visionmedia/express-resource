@@ -154,5 +154,28 @@ module.exports = {
     assert.response(app,
       { url: '/users/1/pets.json' },
       { body: '["tobi","jane","loki"]' });
+  },
+  
+  'test ids with dots': function(){
+    var app = express.createServer();
+    app.resource('tests', {show: {
+      json: function(req, res){
+        res.send(req.params.test);
+      }, default: function(req, res){
+        res.send(406);
+      }}}, { format: 'json' });
+    assert.response(app,
+      { url: '/tests/foo' },
+      { body: 'foo'});
+
+    assert.response(app,
+      { url: '/tests/foo.json' },
+      { body: 'foo' });
+    assert.response(app,
+      { url: '/tests/foo.bar.json' },
+      { body: 'foo.bar' });
+    assert.response(app,
+      { url: '/tests/foo.bar' },
+      { status: 406 });
   }
 };
