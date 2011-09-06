@@ -200,6 +200,30 @@ module.exports = {
       { body: 'show thread 50 of forum 1' });
   },
 
+  'test root nesting': function(){
+    var app = express.createServer();
+    
+    var forum = app.resource(require('./fixtures/forum'));
+    var thread = app.resource('threads', require('./fixtures/thread'));
+    forum.map(thread);
+
+    assert.response(app,
+      { url: '/' },
+      { body: 'forum index' });
+
+    assert.response(app,
+      { url: '/12' },
+      { body: 'show forum 12' });
+
+    assert.response(app,
+      { url: '/12/threads' },
+      { body: 'thread index of forum 12' });
+    
+    assert.response(app,
+      { url: '/1/threads/50' },
+      { body: 'show thread 50 of forum 1' });
+  },
+
   'test shallow auto-loading': function(){
     var app = express.createServer();
     var Forum = require('./fixtures/forum').Forum;
