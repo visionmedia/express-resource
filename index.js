@@ -161,7 +161,8 @@ Resource.prototype.add = function(resource){
     , route;
 
   // relative base
-  resource.base = this.base + this.name + '/' + this.param + '/';
+  resource.base = this.base + (this.name ? this.name + '/': '') +
+                  this.param + '/';
 
   // re-define previous actions
   for (var method in resource.routes) {
