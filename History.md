@@ -1,4 +1,10 @@
 
+0.2.2 / 2011-09-08 
+==================
+
+  * Added support to allow root resources to have nested resources
+  * Added auto-load signature support of `(req, id, callback)`
+
 0.2.1 / 2011-05-25 
 ==================
 
