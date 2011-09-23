@@ -1,4 +1,9 @@
 
+0.2.3 / 2011-09-23 
+==================
+
+  * Fixed logic to allow actions to be defined in any order [Wompt]
+
 0.2.2 / 2011-09-08 
 ==================
 
