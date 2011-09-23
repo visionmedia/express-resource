@@ -45,10 +45,9 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.param = ':' + this.id;
 
   // default actions
-  for(var i=0, key; i < orderedActions.length; i++) {
+  for (var i=0, key; i < orderedActions.length; i++) {
     key = orderedActions[i];
-    if(actions[key])
-      this.mapDefaultAction(key, actions[key]);
+    if (actions[key]) this.mapDefaultAction(key, actions[key]);
   }
 
   // auto-loader
