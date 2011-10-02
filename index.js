@@ -41,6 +41,10 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.base = actions.base || '/';
   if ('/' != this.base[this.base.length - 1]) this.base += '/';
   this.format = actions.format;
+  this.formats = actions.formats;
+  if (this.formats && this.formats.length) {
+    this.format = this.formats[0];
+  }
   this.id = actions.id || this.defaultId;
   this.param = ':' + this.id;
 
@@ -126,7 +130,10 @@ Resource.prototype.map = function(method, path, fn){
   var route = this.base + (this.name || '');
   if (this.name && path) route += '/';
   route += path;
-  route += '.:format?';
+  if (this.formats)
+    route += '.:format(' + this.formats.join('|') + ')?';
+  else
+    route += '.:format?';
 
   // register the route so we may later remove it
   (this.routes[method] = this.routes[method] || {})[route] = {
