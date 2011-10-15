@@ -97,7 +97,7 @@ Resource.prototype.load = function(fn){
 
 Resource.prototype.__defineGetter__('defaultId', function(){
   return this.name
-    ? en.singularize(this.name)
+    ? en.singularize(this.name.split('/').pop())
     : 'id';
 });
 
@@ -171,8 +171,9 @@ Resource.prototype.add = function(resource){
     , route;
 
   // relative base
-  resource.base = this.base + (this.name ? this.name + '/': '') +
-                  this.param + '/';
+  resource.base = this.base
+    + (this.name ? this.name + '/': '')
+    + this.param + '/';
 
   // re-define previous actions
   for (var method in resource.routes) {

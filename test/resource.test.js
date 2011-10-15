@@ -315,5 +315,18 @@ module.exports = {
     assert.response(app, 
       { url: '/users/logout' },
       { body: 'logout' });    
+  },
+  
+  'test several segments': function(){
+    var app = express.createServer();
+    var cat = app.resource('api/cat', require('./fixtures/cat'));
+
+    assert.response(app,
+      { url: '/api/cat' },
+      { body: 'list of cats' });
+
+    assert.response(app,
+      { url: '/api/cat/new' },
+      { body: 'new cat' });
   }
 };
