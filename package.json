@@ -7,13 +7,13 @@
   ]
   , "dependencies": { "lingo": ">= 0.0.4" }
   , "devDependencies": {
-      "connect": "1.4.x"
-    , "express": "2.3.x"
+      "connect": "1.8.x"
+    , "express": "2.5.x"
     , "ejs": "0.4.x"
-    , "expresso": "0.7.x"
+    , "expresso": "0.9.x"
     , "lingo": "0.0.4"
     , "qs": "0.1.x"
-    , "should": ">= 0.0.1"
+    , "should": "*"
   }
   , "keywords": ["express", "rest", "resource"]
   , "main": "index"
