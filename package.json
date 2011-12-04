@@ -11,7 +11,6 @@
     , "express": "2.5.x"
     , "ejs": "0.4.x"
     , "expresso": "0.9.x"
-    , "lingo": "0.0.4"
     , "qs": "0.1.x"
     , "should": "*"
   }
