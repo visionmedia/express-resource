@@ -1,6 +1,3 @@
-
-require.paths.unshift(__dirname + '/../support');
-
 /**
  * Module dependencies.
  */
@@ -35,11 +32,11 @@ var user = {
   destroy: function(req, res){
     delete users[req.params.user];
     res.send('removed ' + req.params.user);
-  }
+  },
   
   login: function(req, res){
     res.send('logged in ' + req.params.user);
-  }
+  },
   
   logout: function(req, res){
     res.send('logged out');
