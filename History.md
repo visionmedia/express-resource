@@ -1,4 +1,11 @@
 
+0.2.4 / 2011-12-28 
+==================
+
+  * Fixed windows path join. Closes #43
+  * Fixed _examples/user.js_
+  * Fixed resource id when multiple segments are present. Closes #36
+
 0.2.3 / 2011-09-23 
 ==================
 
