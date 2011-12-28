@@ -13,16 +13,21 @@
 var express = require('express')
   , join = require('path').join
   , lingo = require('lingo')
-  , en = lingo.en
-  , orderedActions = [
-    'index'   //  GET  /
-    ,'new'    //  GET  /new
-    ,'create' //  POST /
-    ,'show'   //  GET  /:id
-    ,'edit'   //  GET  /edit/:id
-    ,'update' //  PUT  /:id
-    ,'destroy'//  DEL  /:id
-  ];
+  , en = lingo.en;
+
+/**
+ * Pre-defined action ordering.
+ */
+
+var orderedActions = [
+  'index'    //  GET  /
+  ,'new'     //  GET  /new
+  ,'create'  //  POST /
+  ,'show'    //  GET  /:id
+  ,'edit'    //  GET  /edit/:id
+  ,'update'  //  PUT  /:id
+  ,'destroy' //  DEL  /:id
+];
   
 /**
  * Initialize a new `Resource` with the given `name` and `actions`.
