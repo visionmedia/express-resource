@@ -11,7 +11,6 @@
  */
 
 var express = require('express')
-  , join = require('path').join
   , lingo = require('lingo')
   , en = lingo.en;
 
@@ -124,7 +123,7 @@ Resource.prototype.map = function(method, path, fn){
   if ('function' == typeof path) fn = path, path = '';
   if ('object' == typeof path) fn = path, path = '';
   if ('/' == path[0]) path = path.substr(1);
-  else path = join(this.param, path);
+  else path = path ? this.param + '/' + path : this.param;
   method = method.toLowerCase();
 
   // setup route pathname
