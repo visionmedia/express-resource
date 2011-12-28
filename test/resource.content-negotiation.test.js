@@ -30,7 +30,7 @@ module.exports = {
     assert.response(app,
       { url: '/pets.json' },
       { body: '["tobi","jane","loki"]'
-      , headers: { 'Content-Type': 'application/json' }});
+      , headers: { 'Content-Type': 'application/json; charset=utf-8' }});
   
     assert.response(app,
       { url: '/pets/1.json' },
@@ -62,7 +62,7 @@ module.exports = {
     assert.response(app,
       { url: '/pets.json' },
       { body: '["tobi","jane","loki"]'
-      , headers: { 'Content-Type': 'application/json' }});
+      , headers: { 'Content-Type': 'application/json; charset=utf-8' }});
   
     assert.response(app,
       { url: '/pets' },
@@ -82,7 +82,7 @@ module.exports = {
     assert.response(app,
       { url: '/pets.json' },
       { body: '["tobi","jane","loki"]'
-      , headers: { 'Content-Type': 'application/json' }});
+      , headers: { 'Content-Type': 'application/json; charset=utf-8' }});
   
     assert.response(app,
       { url: '/pets' },
