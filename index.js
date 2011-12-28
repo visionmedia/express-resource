@@ -11,7 +11,6 @@
  */
 
 var express = require('express')
-  , join = require('path').join
   , lingo = require('lingo')
   , en = lingo.en
   , orderedActions = [
@@ -119,7 +118,7 @@ Resource.prototype.map = function(method, path, fn){
   if ('function' == typeof path) fn = path, path = '';
   if ('object' == typeof path) fn = path, path = '';
   if ('/' == path[0]) path = path.substr(1);
-  else path = join(this.param, path);
+  else path = posixPathJoin(this.param, path);
   method = method.toLowerCase();
 
   // setup route pathname
@@ -255,4 +254,52 @@ express.HTTPSServer.prototype.resource = function(name, actions, opts){
   for (var key in opts) options[key] = opts[key];
   var res = this.resources[name] = new Resource(name, actions, this);
   return res;
+};
+
+/**
+ * Use posix path module methods on Windows so that URLs do not contain \
+   instead of / when using functions like path.join. These posix methods are
+   ripped from the path module.
+ */
+
+function pathNormalizeArray(parts, allowAboveRoot) {
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last == '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+  return parts;
+}
+function posixPathNormalize(path) {
+  var isAbsolute = path.charAt(0) === '/',
+      trailingSlash = path.slice(-1) === '/';
+  path = pathNormalizeArray(path.split('/').filter(function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+  return (isAbsolute ? '/' : '') + path;
+};
+function posixPathJoin() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return posixPathNormalize(paths.filter(function(p, index) {
+    return p && typeof p === 'string';
+  }).join('/'));
 };
