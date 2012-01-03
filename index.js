@@ -41,7 +41,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.name = name;
   this.app = app;
   this.routes = {};
-  actions = actions || {};
+  this.actions = actions = actions || {};
   this.base = actions.base || '/';
   if ('/' != this.base[this.base.length - 1]) this.base += '/';
   this.format = actions.format;
@@ -122,6 +122,7 @@ Resource.prototype.map = function(method, path, fn){
   if (method instanceof Resource) return this.add(method);
   if ('function' == typeof path) fn = path, path = '';
   if ('object' == typeof path) fn = path, path = '';
+  if ('string' === typeof fn) fn = this.actions[fn];
   if ('/' == path[0]) path = path.substr(1);
   else path = path ? this.param + '/' + path : this.param;
   method = method.toLowerCase();

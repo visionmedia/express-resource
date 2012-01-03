@@ -169,7 +169,7 @@ module.exports = {
     var forum = app.resource('forums', require('./fixtures/forum'));
     var thread = app.resource('threads', require('./fixtures/thread'));
 
-    var ret = user.add(forum);
+    var ret = user.map(forum);
     ret.should.equal(user);
     
     var ret = forum.add(thread);
@@ -301,7 +301,10 @@ module.exports = {
       },
       logout: function(req, res){
         res.end('logout');
-      }
+      }/*,
+      show: function(req, res) {
+        res.end('login and logout must be registered ahead of show to work');
+      }*/
     };
     
     var users = app.resource('users', actions, { load: load });
@@ -362,5 +365,33 @@ module.exports = {
       { url: '/forums/1/threads/50.json' },
       { body: '{"thread":"50","forum":"1","role":"thread owner"}'
         , headers: { 'Content-Type': 'application/json' } });
+  },
+
+  'test mapping custom actions with strings': function() {
+    var app = express.createServer();
+    
+    var actions = {
+      login: function(req, res){
+        res.end('login');
+      },
+      logout: function(req, res){
+        res.end('logout');
+      }/*,
+      show: function(req, res) {
+        res.end('login and logout must be registered ahead of show to work');
+      }*/
+    };
+    
+    app.resource('users', actions)
+      .map('all', '/login', 'login')
+      .map('all', '/logout', 'logout');
+    
+    assert.response(app,
+      { url: '/users/login' },
+      { body: 'login' });
+
+    assert.response(app,
+      { url: '/users/logout' },
+      { body: 'logout' });
   }
 };
