@@ -328,5 +328,14 @@ module.exports = {
     assert.response(app,
       { url: '/api/cat/new' },
       { body: 'new cat' });
+  },
+
+  'test middleware by array': function() {
+    var app = express.createServer();
+    var cat = app.resource('api/cat', require('./fixtures/cat'));
+
+    assert.response(app,
+      { url: '/api/cat/1/edit' },
+      { body: 'usertype: cat owner' });
   }
 };

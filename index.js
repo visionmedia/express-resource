@@ -140,22 +140,29 @@ Resource.prototype.map = function(method, path, fn){
     , fn: fn
   };
 
-  // apply the route
-  this.app[method](route, function(req, res, next){
-    req.format = req.params.format || req.format || self.format;
-    if (req.format) res.contentType(req.format);
-    if ('object' == typeof fn) {
-      if (req.format && fn[req.format]) {
-        fn[req.format](req, res, next);
-      } else if (fn.default) {
-        fn.default(req, res, next);
+  // apply Array of middleware
+  if (fn instanceof Array) {
+    // TODO: Make arrays of middleware also work with formats
+    this.app[method](route, fn);
+  }
+  else {
+    // apply the route
+    this.app[method](route, function(req, res, next){
+      req.format = req.params.format || req.format || self.format;
+      if (req.format) res.contentType(req.format);
+      if ('object' == typeof fn) {
+        if (req.format && fn[req.format]) {
+          fn[req.format](req, res, next);
+        } else if (fn.default) {
+          fn.default(req, res, next);
+        } else {
+          res.send(406);
+        }
       } else {
-        res.send(406);
+        fn(req, res, next);
       }
-    } else {
-      fn(req, res, next);
-    }
-  });
+    });  
+  }
 
   return this;
 };
