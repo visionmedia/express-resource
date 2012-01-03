@@ -14,6 +14,19 @@ exports.filter = function(req, res, next) {
 
 exports.edit = [
   exports.filter,
-  function(req, res, next) {
+  function(req, res) {
     res.send('usertype: ' + req.usertype);
-  }];
+  }
+];
+
+exports.show = [
+  exports.filter,
+  function(req, res) {
+    if ('json' === req.format) {
+      res.send(JSON.stringify({usertype: req.usertype}));
+    }
+    else {
+      res.send('usertype: ' + req.usertype);
+    }
+  }
+];

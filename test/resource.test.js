@@ -337,5 +337,30 @@ module.exports = {
     assert.response(app,
       { url: '/api/cat/1/edit' },
       { body: 'usertype: cat owner' });
+  },
+
+  'test middleware by array with shallow nesting and format': function(){
+    var app = express.createServer();
+
+    var forum = app.resource('forums', require('./fixtures/forum.middleware'));
+    var thread = app.resource('threads', require('./fixtures/thread.middleware'));
+    forum.map(thread);
+
+    assert.response(app,
+      { url: '/forums' },
+      { body: 'forum index' });
+
+    assert.response(app,
+      { url: '/forums/12' },
+      { body: 'show forum 12' });
+
+    assert.response(app,
+      { url: '/forums/12/threads' },
+      { body: 'thread index of forum 12' });
+    
+    assert.response(app,
+      { url: '/forums/1/threads/50.json' },
+      { body: '{"thread":"50","forum":"1","role":"thread owner"}'
+        , headers: { 'Content-Type': 'application/json' } });
   }
 };
