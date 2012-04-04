@@ -69,6 +69,54 @@ module.exports = {
       { body: 'Unsupported format', status: 406 });
   },
   
+  'test content-negotiation for known formats': function(){
+    var app = express.createServer();
+  
+    app.resource('series', {
+      show: function(req, res){
+        res.send(req.format + ": " + req.params.series);
+      }
+    }, { formats: ['json', 'xml'] });
+  
+    assert.response(app,
+      { url: '/series/Dr.%20House.xml' },
+      { body: 'xml: Dr. House'
+      , headers: { 'Content-Type': 'application/xml' }});
+  
+    assert.response(app,
+      { url: '/series/Dr.%20House.json' },
+      { body: 'json: Dr. House'
+      , headers: { 'Content-Type': 'application/json' }});
+  
+    assert.response(app,
+      { url: '/series/Dr.%20House' },
+      { body: 'json: Dr. House'
+      , headers: { 'Content-Type': 'application/json' }});
+  
+    assert.response(app,
+      { url: '/series/Dr.%20House.html' },
+      { body: 'json: Dr. House.html'
+      , headers: { 'Content-Type': 'application/json' }});
+  },
+  
+  'test content-negotiation with no format': function(){
+    var app = express.createServer();
+  
+    app.resource('series', {
+      show: function(req, res){
+        res.send(req.params.series);
+      }
+    }, { formats: [] });
+  
+    assert.response(app,
+      { url: '/series/Dr.%20House' },
+      { body: 'Dr. House' });
+  
+    assert.response(app,
+      { url: '/series/Dr.%20House.html' },
+      { body: 'Dr. House.html' });
+  },
+  
   'test content-negotiation via format method without default': function(){
     var app = express.createServer();
   
