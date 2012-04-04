@@ -169,7 +169,7 @@ module.exports = {
     var forum = app.resource('forums', require('./fixtures/forum'));
     var thread = app.resource('threads', require('./fixtures/thread'));
 
-    var ret = user.add(forum);
+    var ret = user.map(forum);
     ret.should.equal(user);
     
     var ret = forum.add(thread);
@@ -301,7 +301,10 @@ module.exports = {
       },
       logout: function(req, res){
         res.end('logout');
-      }
+      }/*,
+      show: function(req, res) {
+        res.end('login and logout must be registered ahead of show to work');
+      }*/
     };
     
     var users = app.resource('users', actions, { load: load });
@@ -328,5 +331,67 @@ module.exports = {
     assert.response(app,
       { url: '/api/cat/new' },
       { body: 'new cat' });
+  },
+
+  'test middleware by array': function() {
+    var app = express.createServer();
+    var cat = app.resource('api/cat', require('./fixtures/cat'));
+
+    assert.response(app,
+      { url: '/api/cat/1/edit' },
+      { body: 'usertype: cat owner' });
+  },
+
+  'test middleware by array with shallow nesting and format': function(){
+    var app = express.createServer();
+
+    var forum = app.resource('forums', require('./fixtures/forum.middleware'));
+    var thread = app.resource('threads', require('./fixtures/thread.middleware'));
+    forum.map(thread);
+
+    assert.response(app,
+      { url: '/forums' },
+      { body: 'forum index' });
+
+    assert.response(app,
+      { url: '/forums/12' },
+      { body: 'show forum 12' });
+
+    assert.response(app,
+      { url: '/forums/12/threads' },
+      { body: 'thread index of forum 12' });
+    
+    assert.response(app,
+      { url: '/forums/1/threads/50.json' },
+      { body: '{"thread":"50","forum":"1","role":"thread owner"}'
+        , headers: { 'Content-Type': 'application/json' } });
+  },
+
+  'test mapping custom actions with strings': function() {
+    var app = express.createServer();
+    
+    var actions = {
+      login: function(req, res){
+        res.end('login');
+      },
+      logout: function(req, res){
+        res.end('logout');
+      }/*,
+      show: function(req, res) {
+        res.end('login and logout must be registered ahead of show to work');
+      }*/
+    };
+    
+    app.resource('users', actions)
+      .map('all', '/login', 'login')
+      .map('all', '/logout', 'logout');
+    
+    assert.response(app,
+      { url: '/users/login' },
+      { body: 'login' });
+
+    assert.response(app,
+      { url: '/users/logout' },
+      { body: 'logout' });
   }
 };

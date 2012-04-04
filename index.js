@@ -41,7 +41,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.name = name;
   this.app = app;
   this.routes = {};
-  actions = actions || {};
+  this.actions = actions = actions || {};
   this.base = actions.base || '/';
   if ('/' != this.base[this.base.length - 1]) this.base += '/';
   this.format = actions.format;
@@ -122,6 +122,7 @@ Resource.prototype.map = function(method, path, fn){
   if (method instanceof Resource) return this.add(method);
   if ('function' == typeof path) fn = path, path = '';
   if ('object' == typeof path) fn = path, path = '';
+  if ('string' === typeof fn) fn = this.actions[fn];
   if ('/' == path[0]) path = path.substr(1);
   else path = path ? this.param + '/' + path : this.param;
   method = method.toLowerCase();
@@ -140,22 +141,18 @@ Resource.prototype.map = function(method, path, fn){
     , fn: fn
   };
 
-  // apply the route
-  this.app[method](route, function(req, res, next){
+  function extract_format(req, res, next) {
     req.format = req.params.format || req.format || self.format;
     if (req.format) res.contentType(req.format);
-    if ('object' == typeof fn) {
-      if (req.format && fn[req.format]) {
-        fn[req.format](req, res, next);
-      } else if (fn.default) {
-        fn.default(req, res, next);
-      } else {
-        res.send(406);
-      }
-    } else {
-      fn(req, res, next);
-    }
-  });
+    next();
+  }
+
+  // ensure fn is an array of functions and inject req.format
+  if (!(fn instanceof Array)) fn = [fn];
+  fn.unshift(extract_format);
+  
+  // apply the route
+  this.app[method](route, fn);
 
   return this;
 };
