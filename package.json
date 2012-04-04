@@ -1,6 +1,7 @@
 {   "name": "express-resource"
   , "description": "Resourceful routing for express"
   , "version": "0.2.4"
+  , "homepage": "https://github.com/visionmedia/express-resource"
   , "author": "TJ Holowaychuk <tj@vision-media.ca>"
   , "contributors": [
     { "name": "Daniel Gasienica", "email": "daniel@gasienica.ch" }
