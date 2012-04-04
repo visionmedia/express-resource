@@ -35,9 +35,17 @@ npm:
     exports.update = function(req, res){
       res.send('update forum ' + req.params.forum);
     };
+    
+    exports.save = function(req, res){
+      res.send('save forum ' + req.params.id);
+    };
 
     exports.destroy = function(req, res){
       res.send('destroy forum ' + req.params.forum);
+    };
+    
+    exports.delete = function(req, res){
+      res.send('delete forum ' + req.params.id);
     };
 
 The `app.resource()` method returns a new `Resource` object, which can be used to further map pathnames, nest resources, and more.
@@ -52,13 +60,15 @@ The `app.resource()` method returns a new `Resource` object, which can be used t
 
 Actions are then mapped as follows (by default), providing `req.params.forum` which contains the substring where ":forum" is shown below:
 
-    GET     /forums              ->  index
-    GET     /forums/new          ->  new
-    POST    /forums              ->  create
-    GET     /forums/:forum       ->  show
-    GET     /forums/:forum/edit  ->  edit
-    PUT     /forums/:forum       ->  update
-    DELETE  /forums/:forum       ->  destroy
+    GET     /forums               ->  index
+    GET     /forums/new           ->  new
+    POST    /forums               ->  create
+    GET     /forums/:forum        ->  show
+    GET     /forums/:forum/edit   ->  edit
+    PUT     /forums/:forum        ->  update
+    POST    /forums/:forum        ->  save        // html form don't support PUT and DELETE
+    DELETE  /forums/:forum        ->  destroy
+    POST    /forums/:forum/delete ->  delete
 
 ## Top-Level Resource
 
@@ -74,7 +84,9 @@ Top-level actions are then mapped as follows (by default):
     GET     /:id              ->  show
     GET     /:id/edit         ->  edit
     PUT     /:id              ->  update
+    POST    /:id              ->  save
     DELETE  /:id              ->  destroy
+    POST    /:id/delete       ->  delete
 
 ## Auto-Loading
 

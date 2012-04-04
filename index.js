@@ -221,8 +221,14 @@ Resource.prototype.mapDefaultAction = function(key, fn){
     case 'update':
       this.put(fn);
       break;
+    case 'save':
+      this.post(fn);
+      break;
     case 'destroy':
       this.del(fn);
+      break;
+    case 'delete':
+      this.post('delete', fn);
       break;
   }
 };
