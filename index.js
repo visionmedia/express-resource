@@ -132,6 +132,9 @@ Resource.prototype.map = function(method, path, fn){
   route += path;
   route += '.:format?';
 
+  // add convenience functions
+  this.createRouteHelper(path, route);
+
   // register the route so we may later remove it
   (this.routes[method] = this.routes[method] || {})[route] = {
       method: method
@@ -139,7 +142,7 @@ Resource.prototype.map = function(method, path, fn){
     , orig: orig
     , fn: fn
   };
-
+    
   // apply the route
   this.app[method](route, function(req, res, next){
     req.format = req.params.format || req.format || self.format;
@@ -156,7 +159,7 @@ Resource.prototype.map = function(method, path, fn){
       fn(req, res, next);
     }
   });
-
+  
   return this;
 };
 
@@ -188,6 +191,11 @@ Resource.prototype.add = function(resource){
       app[method](key).remove();
       resource.map(route.method, route.orig, route.fn);
     }
+  }
+  
+  // delete previous route helpers
+  for(var methodName in resource.paths) {
+    delete resourceAccess.path[methodName];
   }
 
   return this;
@@ -228,6 +236,66 @@ Resource.prototype.mapDefaultAction = function(key, fn){
 };
 
 /**
+ * Create URL path generators.
+ *
+ * @param {String} orig
+ * @api private
+ */
+ 
+Resource.prototype.createRouteHelper = function(mapPath, route) {
+  resourceAccess.path = resourceAccess.path || {};
+  resourceAccess.path.idField = resourceAccess.path.idField || 'id';
+  
+  var methodName = this.name || "roots";
+  var argCount = 0;
+  
+  route = route.replace(/\.:format\?$/, '');
+  route = route.replace(/\/null/, ''); // Happens with a nameless top level resource
+  
+  // Check to see how many levels deep we are and clean up the route
+  if(this.base.length > 1) {
+    // build up in reverse
+    var params = this.base.match(/:(\w+)/g);
+    params.reverse().forEach(function(param) {
+      if(param === ':id') { param = ':root'; }
+      methodName = param.slice(1) + '_' + methodName;
+      argCount += 1;
+    });
+  }
+    
+  if(mapPath === 'new') {
+    methodName = 'new_' + en.singularize(methodName);
+  } else if(mapPath.indexOf(this.param) !== (-1)) {
+    var actionName = mapPath.slice(this.param.length); 
+    if (actionName[0] == '/') { actionName = actionName.slice(1); }
+    
+    methodName = en.singularize(methodName);
+    if(actionName.length > 0) {
+      methodName = actionName + '_' + methodName;
+    }
+    argCount++;
+  } else if (mapPath.length > 0) {
+    // custom collection action
+    methodName = mapPath + '_' + methodName;
+  }
+  
+  // Add paths to this resource so we can remove them later if we become nested (see #add)
+  this.paths = this.paths || [];
+  this.paths.push(methodName);
+    
+  // Add to the app.resource object
+  resourceAccess.path[methodName + '_path'] = resourceAccess.path[methodName] || function() {
+    var localRoute = route;
+    Array.prototype.forEach.call(arguments, function(arg) {
+      var id = arg[resourceAccess.path.idField] || arg; 
+      localRoute = localRoute.replace(/:\w+/, id);
+    });
+    return localRoute;
+  };
+}
+
+
+/**
  * Setup http verb methods.
  */
 
@@ -249,6 +317,7 @@ express.router.methods.concat(['del', 'all']).forEach(function(method){
  * @api public
  */
 
+var resourceAccess = 
 express.HTTPServer.prototype.resource =
 express.HTTPSServer.prototype.resource = function(name, actions, opts){
   var options = actions || {};
