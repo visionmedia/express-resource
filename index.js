@@ -1,4 +1,3 @@
-
 /*!
  * Express - Resource
  * Copyright(c) 2010-2011 TJ Holowaychuk <tj@vision-media.ca>
@@ -231,7 +230,7 @@ Resource.prototype.mapDefaultAction = function(key, fn){
  * Setup http verb methods.
  */
 
-express.router.methods.concat(['del', 'all']).forEach(function(method){
+express.Router.methods.concat(['del', 'all']).forEach(function(method){
   Resource.prototype[method] = function(path, fn){
     if ('function' == typeof path
       || 'object' == typeof path) fn = path, path = '';
@@ -249,8 +248,8 @@ express.router.methods.concat(['del', 'all']).forEach(function(method){
  * @api public
  */
 
-express.HTTPServer.prototype.resource =
-express.HTTPSServer.prototype.resource = function(name, actions, opts){
+express.application.resource =
+express.application.resource = function(name, actions, opts){
   var options = actions || {};
   if ('object' == typeof name) actions = name, name = null;
   if (options.id) actions.id = options.id;
