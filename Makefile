@@ -1,6 +1,7 @@
 
 test:
-	@./node_modules/expresso/bin/expresso \
-		-I support
+	@./node_modules/.bin/mocha \
+		--require should \
+		--reporter spec
 
 .PHONY: test

@@ -6,16 +6,21 @@
   , "contributors": [
     { "name": "Daniel Gasienica", "email": "daniel@gasienica.ch" }
   ]
-  , "dependencies": { "lingo": ">= 0.0.4" }
+  , "dependencies": {
+      "lingo": ">= 0.0.4"
+    , "methods": "0.0.1"
+    , "debug": "*"
+  }
   , "devDependencies": {
-      "connect": "1.8.x"
-    , "express": "2.5.x"
+      "connect": "2.x"
+    , "express": "3.x"
     , "ejs": "0.4.x"
-    , "expresso": "0.9.x"
     , "qs": "0.1.x"
+    , "mocha": "*"
     , "should": "*"
+    , "supertest": "0.1.2"
   }
   , "keywords": ["express", "rest", "resource"]
   , "main": "index"
-  , "engines": { "node": ">= 0.2.0" }
+  , "engines": { "node": "*" }
 }
