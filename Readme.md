@@ -163,7 +163,7 @@ Resources have the concept of "auto-loading" associated data. For example we can
  Every action can have its own different middleware attached (or no middleware at all).
  The middleware can be specified in one of two ways: by passing a `middleware` option to `app.resource()` or by attaching it directly to the actions.
 
- ### middleware option
+### middleware option
 
   With the `middleware` option, it's possible to specify the middleware in a single place:
 
@@ -194,7 +194,7 @@ Resources have the concept of "auto-loading" associated data. For example we can
      };
      app.resource('forums', require('./forum'), {middleware: forumsMiddleware});
 
- ### inline middleware
+### inline middleware
 
   It's also possible to specify the route middleware directly with the actions. There are two styles, with a JavaScript object or with an array:
 
