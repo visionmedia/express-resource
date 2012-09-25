@@ -157,6 +157,67 @@ Resources have the concept of "auto-loading" associated data. For example we can
  
      app.resource('users', actions, { format: 'json' });
 
+## Middleware
+
+ This version supports attaching [route middleware](http://expressjs.com/2x/guide.html#route-middleware) to actions.
+ Every action can have its own different middleware attached (or no middleware at all).
+ The middleware can be specified in one of two ways: by passing a `middleware` option to `app.resource()` or by attaching it directly to the actions.
+
+### middleware option
+
+  With the `middleware` option, it's possible to specify the middleware in a single place:
+
+     var express = require('express')
+       , Resource = require('express-resource')
+       , app = express.createServer();
+
+     var forumsMiddleware = {
+       index: authMiddleware,
+       new: [authMiddleware, adminMiddleware],
+       create: [authMiddleware, adminMiddleware],
+       show: authMiddleware,
+       edit: [authMiddleware, adminMiddleware],
+       update: [authMiddleware, adminMiddleware],
+       destroy: [authMiddleware, adminMiddleware]
+     };
+     app.resource('forums', require('./forum'), {middleware: forumsMiddleware});
+
+  It's also possible to specify a special "glob" key, that matches every action, and is considered when no specific middleware is specified:
+
+     var forumsMiddleware = {
+       '*': authMiddleware,
+       new: [authMiddleware, adminMiddleware],
+       create: [authMiddleware, adminMiddleware],
+       edit: [authMiddleware, adminMiddleware],
+       update: [authMiddleware, adminMiddleware],
+       destroy: [authMiddleware, adminMiddleware]
+     };
+     app.resource('forums', require('./forum'), {middleware: forumsMiddleware});
+
+### inline middleware
+
+  It's also possible to specify the route middleware directly with the actions. There are two styles, with a JavaScript object or with an array:
+
+    exports.index = {
+      middleware: authMiddleware,
+      fn: function(req, res){
+        res.send('forum index');
+      }
+    };
+
+    exports.new = [ authMiddleware, adminMiddleware, function(req, res){
+      res.send('new forum');
+    } ];
+
+    exports.create = {
+      middleware: [ authMiddleware, adminMiddleware ],
+      fn: function(req, res){
+        res.send('create forum');
+      }
+    };
+
+    ...
+
 ## Running Tests
 
 First make sure you have the submodules:
