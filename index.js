@@ -1,7 +1,7 @@
 
 /*!
  * Express - Resource
- * Copyright(c) 2010-2011 TJ Holowaychuk <tj@vision-media.ca>
+ * Copyright(c) 2010-2012 TJ Holowaychuk <tj@vision-media.ca>
  * Copyright(c) 2011 Daniel Gasienica <daniel@gasienica.ch>
  * MIT Licensed
  */
@@ -11,7 +11,10 @@
  */
 
 var express = require('express')
+  , methods = require('methods')
+  , debug = require('debug')('express-resource')
   , lingo = require('lingo')
+  , app = express.application
   , en = lingo.en;
 
 /**
@@ -19,15 +22,21 @@ var express = require('express')
  */
 
 var orderedActions = [
-  'index'    //  GET  /
-  ,'new'     //  GET  /new
-  ,'create'  //  POST /
-  ,'show'    //  GET  /:id
-  ,'edit'    //  GET  /edit/:id
-  ,'update'  //  PUT  /:id
-  ,'destroy' //  DEL  /:id
+   'index'    //  GET  /
+  , 'new'     //  GET  /new
+  , 'create'  //  POST /
+  , 'show'    //  GET  /:id
+  , 'edit'    //  GET  /edit/:id
+  , 'update'  //  PUT  /:id
+  , 'destroy' //  DEL  /:id
 ];
-  
+
+/**
+ * Expose `Resource`.
+ */
+
+module.exports = Resource;
+
 /**
  * Initialize a new `Resource` with the given `name` and `actions`.
  *
@@ -37,7 +46,7 @@ var orderedActions = [
  * @api private
  */
 
-var Resource = module.exports = function Resource(name, actions, app) {
+function Resource(name, actions, app) {
   this.name = name;
   this.app = app;
   this.routes = {};
@@ -49,7 +58,7 @@ var Resource = module.exports = function Resource(name, actions, app) {
   this.param = ':' + this.id;
 
   // default actions
-  for (var i=0, key; i < orderedActions.length; i++) {
+  for (var i = 0, key; i < orderedActions.length; ++i) {
     key = orderedActions[i];
     if (actions[key]) this.mapDefaultAction(key, actions[key]);
   }
@@ -143,14 +152,12 @@ Resource.prototype.map = function(method, path, fn){
   // apply the route
   this.app[method](route, function(req, res, next){
     req.format = req.params.format || req.format || self.format;
-    if (req.format) res.contentType(req.format);
+    if (req.format) res.type(req.format);
     if ('object' == typeof fn) {
-      if (req.format && fn[req.format]) {
+      if (fn[req.format]) {
         fn[req.format](req, res, next);
-      } else if (fn.default) {
-        fn.default(req, res, next);
       } else {
-        res.send(406);
+        res.format(fn);
       }
     } else {
       fn(req, res, next);
@@ -185,7 +192,12 @@ Resource.prototype.add = function(resource){
     for (var key in routes) {
       route = routes[key];
       delete routes[key];
-      app[method](key).remove();
+      if (method == 'del') method = 'delete';
+      app.routes[method].forEach(function(route, i){
+        if (route.path == key) {
+          app.routes[method].splice(i, 1);
+        }
+      })
       resource.map(route.method, route.orig, route.fn);
     }
   }
@@ -231,7 +243,7 @@ Resource.prototype.mapDefaultAction = function(key, fn){
  * Setup http verb methods.
  */
 
-express.router.methods.concat(['del', 'all']).forEach(function(method){
+methods.concat(['del', 'all']).forEach(function(method){
   Resource.prototype[method] = function(path, fn){
     if ('function' == typeof path
       || 'object' == typeof path) fn = path, path = '';
@@ -249,8 +261,7 @@ express.router.methods.concat(['del', 'all']).forEach(function(method){
  * @api public
  */
 
-express.HTTPServer.prototype.resource =
-express.HTTPSServer.prototype.resource = function(name, actions, opts){
+app.resource = function(name, actions, opts){
   var options = actions || {};
   if ('object' == typeof name) actions = name, name = null;
   if (options.id) actions.id = options.id;
