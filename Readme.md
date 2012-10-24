@@ -94,7 +94,7 @@ Resources have the concept of "auto-loading" associated data. For example we can
 
       app.resource('users', { show: ..., load: User.load });
       
- With the auto-loader defined, the `req.user` object will be available now be available to the actions automatically. We may pass the "load" option as the third param as well, although this is equivalent to above, but allows you to either export ".load" along with your actions, or passing it explicitly:
+ With the auto-loader defined, the `req.user` object will now be available to the actions automatically. We may pass the "load" option as the third param as well, although this is equivalent to above, but allows you to either export ".load" along with your actions, or passing it explicitly:
  
      app.resource('users', require('./user'), { load: User.load });
 
