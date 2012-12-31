@@ -149,8 +149,8 @@ Resource.prototype.map = function(method, path, fn){
     , fn: fn
   };
 
-  // apply the route
-  this.app[method](route, function(req, res, next){
+  
+  var contentNegotiate = function(req, res, next){
     req.format = req.params.format || req.format || self.format;
     if (req.format) res.type(req.format);
     if ('object' == typeof fn) {
@@ -162,7 +162,11 @@ Resource.prototype.map = function(method, path, fn){
     } else {
       fn(req, res, next);
     }
-  });
+  };
+
+  var routeHandler = Array.isArray(fn) || typeof fn === 'function'? fn : contentNegotiate;
+  // apply the route
+  this.app[method](route, routeHandler);
 
   return this;
 };
