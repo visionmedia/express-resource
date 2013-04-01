@@ -232,9 +232,11 @@ Resource.prototype.mapDefaultAction = function(key, fn){
       break;
     case 'update':
       this.put(fn);
+      this.post('update', fn);
       break;
     case 'destroy':
       this.del(fn);
+      this.get('destroy', fn);
       break;
   }
 };
