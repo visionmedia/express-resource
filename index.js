@@ -180,18 +180,24 @@ Resource.prototype._applyRoute = function(method, route, fn){
  */
 
 Resource.prototype.add = function(resource){
+  var relativeBase = this.base
+    + (this.name ? this.name + '/': '')
+    + this.param + '/';
+
+  resource._updatePathBase(relativeBase)
+
+  return this;
+};
+
+Resource.prototype._updatePathBase = function(newBase){
   var app = this.app
     , routes
     , route;
 
-  // relative base
-  resource.base = this.base
-    + (this.name ? this.name + '/': '')
-    + this.param + '/';
-
+  this.base = newBase;
   // re-define previous actions
-  for (var method in resource.routes) {
-    routes = resource.routes[method];
+  for (var method in this.routes) {
+    routes = this.routes[method];
     for (var key in routes) {
       route = routes[key];
       delete routes[key];
@@ -201,11 +207,9 @@ Resource.prototype.add = function(resource){
           app.routes[method].splice(i, 1);
         }
       })
-      resource.map(route.method, route.orig, route.fn);
+      this.map(route.method, route.orig, route.fn);
     }
   }
-
-  return this;
 };
 
 /**
