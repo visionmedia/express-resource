@@ -149,8 +149,7 @@ Resource.prototype.map = function(method, path, fn){
     , fn: fn
   };
 
-  // apply the route
-  this.app[method](route, function(req, res, next){
+  this._applyRoute(method, route, function(req, res, next){
     req.format = req.params.format || req.format || self.format;
     if (req.format) res.type(req.format);
     if ('object' == typeof fn) {
@@ -165,6 +164,10 @@ Resource.prototype.map = function(method, path, fn){
   });
 
   return this;
+};
+
+Resource.prototype._applyRoute = function(method, route, fn){
+  this.app[method](route, fn);
 };
 
 /**
