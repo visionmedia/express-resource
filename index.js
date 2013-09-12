@@ -149,8 +149,7 @@ Resource.prototype.map = function(method, path, fn){
     , fn: fn
   };
 
-  // apply the route
-  this.app[method](route, function(req, res, next){
+  this._applyRoute(method, route, function(req, res, next){
     req.format = req.params.format || req.format || self.format;
     if (req.format) res.type(req.format);
     if ('object' == typeof fn) {
@@ -167,6 +166,10 @@ Resource.prototype.map = function(method, path, fn){
   return this;
 };
 
+Resource.prototype._applyRoute = function(method, route, fn){
+  this.app[method](route, fn);
+};
+
 /**
  * Nest the given `resource`.
  *
@@ -177,18 +180,24 @@ Resource.prototype.map = function(method, path, fn){
  */
 
 Resource.prototype.add = function(resource){
+  var relativeBase = this.base
+    + (this.name ? this.name + '/': '')
+    + this.param + '/';
+
+  resource._updatePathBase(relativeBase)
+
+  return this;
+};
+
+Resource.prototype._updatePathBase = function(newBase){
   var app = this.app
     , routes
     , route;
 
-  // relative base
-  resource.base = this.base
-    + (this.name ? this.name + '/': '')
-    + this.param + '/';
-
+  this.base = newBase;
   // re-define previous actions
-  for (var method in resource.routes) {
-    routes = resource.routes[method];
+  for (var method in this.routes) {
+    routes = this.routes[method];
     for (var key in routes) {
       route = routes[key];
       delete routes[key];
@@ -198,11 +207,9 @@ Resource.prototype.add = function(resource){
           app.routes[method].splice(i, 1);
         }
       })
-      resource.map(route.method, route.orig, route.fn);
+      this.map(route.method, route.orig, route.fn);
     }
   }
-
-  return this;
 };
 
 /**
@@ -263,11 +270,15 @@ methods.concat(['del', 'all']).forEach(function(method){
 
 app.resource = function(name, actions, opts){
   var options = actions || {};
+  var Resource = (opts || {}).resourceConstructor || app.resource.constructor
   if ('object' == typeof name) actions = name, name = null;
   if (options.id) actions.id = options.id;
   this.resources = this.resources || {};
   if (!actions) return this.resources[name] || new Resource(name, null, this);
   for (var key in opts) options[key] = opts[key];
+  delete options.resourceConstructor
   var res = this.resources[name] = new Resource(name, actions, this);
   return res;
 };
+
+app.resource.constructor = Resource;
