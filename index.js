@@ -270,7 +270,7 @@ methods.concat(['del', 'all']).forEach(function(method){
 
 app.resource = function(name, actions, opts){
   var options = actions || {};
-  var Resource = opts.resourceConstructor || app.resource.constructor
+  var Resource = (opts || {}).resourceConstructor || app.resource.constructor
   if ('object' == typeof name) actions = name, name = null;
   if (options.id) actions.id = options.id;
   this.resources = this.resources || {};
