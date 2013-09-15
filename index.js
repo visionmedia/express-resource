@@ -22,13 +22,14 @@ var express = require('express')
  */
 
 var orderedActions = [
-   'index'    //  GET  /
-  , 'new'     //  GET  /new
-  , 'create'  //  POST /
-  , 'show'    //  GET  /:id
-  , 'edit'    //  GET  /edit/:id
-  , 'update'  //  PUT  /:id
-  , 'destroy' //  DEL  /:id
+   'index'    //  GET   /
+  , 'new'     //  GET   /new
+  , 'create'  //  POST  /
+  , 'show'    //  GET   /:id
+  , 'edit'    //  GET   /edit/:id
+  , 'update'  //  PUT   /:id
+  , 'patch'   //  PATCH /:id
+  , 'destroy' //  DEL   /:id
 ];
 
 /**
@@ -232,6 +233,9 @@ Resource.prototype.mapDefaultAction = function(key, fn){
       break;
     case 'update':
       this.put(fn);
+      break;
+    case 'patch':
+      this.patch(fn);
       break;
     case 'destroy':
       this.del(fn);

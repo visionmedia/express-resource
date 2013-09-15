@@ -41,6 +41,14 @@ describe('app.resource()', function(){
     request(app)
     .get('/forums/5/edit')
     .expect('edit forum 5', next());
+
+    request(app)
+    .put('/forums/5')
+    .expect('update forum 5', next());
+
+    request(app)
+    .patch('/forums/5')
+    .expect('patch forum 5', next());
     
     request(app)
     .del('/forums/5')
@@ -50,25 +58,73 @@ describe('app.resource()', function(){
   it('should support root resources', function(done){
      var app = express();
      var next = batch(done);
-     var forum = app.resource(require('./fixtures/forum'));
+     var forum = app.resource('forums', require('./fixtures/forum'));
      var thread = app.resource('threads', require('./fixtures/thread'));
      forum.map(thread);
   
      request(app)
-     .get('/')
+     .get('/forums')
      .expect('forum index', next());
+
+     request(app)
+     .get('/forums/new')
+     .expect('new forum', next());
+
+     request(app)
+     .post('/forums')
+     .expect('create forum', next());
+
+     request(app)
+     .get('/forums/12')
+     .expect('show forum 12', next());
+
+     request(app)
+     .get('/forums/12/edit')
+     .expect('edit forum 12', next());
+
+     request(app)
+     .put('/forums/12')
+     .expect('update forum 12', next());
+
+     request(app)
+     .patch('/forums/12')
+     .expect('patch forum 12', next());
+
+     request(app)
+     .del('/forums/12')
+     .expect('destroy forum 12', next());
   
-     // request(app)
-     // .get('/12')
-     // .expect('show forum 12', next());
-  
-     // request(app)
-     // .get('/12/threads')
-     // .expect('thread index of forum 12', next());
-  
-     // request(app)
-     // .get('/1/threads/50')
-     // .expect('show thread 50 of forum 1', next());
+     request(app)
+     .get('/forums/12/threads')
+     .expect('thread index of forum 12', next());
+
+     request(app)
+     .get('/forums/12/threads/new')
+     .expect('new thread', next());
+     
+     request(app)
+     .post('/forums/12/threads')
+     .expect('create thread', next());
+     
+     request(app)
+     .get('/forums/12/threads/50')
+     .expect('show thread 50 of forum 12', next());
+   
+     request(app)
+     .get('/forums/12/threads/50/edit')
+     .expect('edit thread 50 of forum 12', next());
+
+     request(app)
+     .put('/forums/12/threads/50')
+     .expect('update thread 50 of forum 12', next());
+
+     request(app)
+     .patch('/forums/12/threads/50')
+     .expect('patch thread 50 of forum 12', next());
+
+     request(app)
+     .del('/forums/12/threads/50')
+     .expect('destroy thread 50 of forum 12', next()) 
    })
   
    describe('"id" option', function(){
