@@ -1,4 +1,3 @@
-
 /*!
  * Express - Resource
  * Copyright(c) 2010-2012 TJ Holowaychuk <tj@vision-media.ca>
@@ -61,7 +60,7 @@ function Resource(name, actions, app) {
   // default actions
   for (var i = 0, key; i < orderedActions.length; ++i) {
     key = orderedActions[i];
-    if (actions[key]) this.mapDefaultAction(key, actions[key]);
+    if (actions[key]) this.mapDefaultAction(key, actions[key].bind(actions));
   }
 
   // auto-loader
