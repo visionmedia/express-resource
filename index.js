@@ -189,6 +189,8 @@ Resource.prototype.add = function(resource){
     + (this.name ? this.name + '/': '')
     + this.param + '/';
 
+  resource.parent = this;
+
   // re-define previous actions
   for (var method in resource.routes) {
     routes = resource.routes[method];
@@ -248,42 +250,50 @@ Resource.prototype.mapDefaultAction = function(key, fn){
 /**
  * Get edit path for resource. Ex '/users/42/edit'.
  *
- * @param {String} id of resource to edit
+ * @param {String} ids Array of ids for parents if resource is nested
  * @return {String} Url of resource "root"
  */
 
-Resource.prototype.editPath = function(id) {
-  return '/' + this.name + '/' + id + '/edit';
+Resource.prototype.editPath = function(ids) {
+  var parentPath = this.parent ? this.parent.recordPath(ids.slice(0, -1)) : '';
+  return parentPath + '/' + this.name + '/' + ids[ids.length - 1] + '/edit';
 }
 
 /**
  * Get path for creating a new resource. Ex '/users/new'.
  *
+ * @param {Array[String]} ids Array of ids for parents if resource is nested
  * @return {String} Url of path to form for creating new resources
  */
 
-Resource.prototype.newPath = function() {
-  return '/' + this.name + '/new';
+Resource.prototype.newPath = function(ids) {
+  debugger;
+  var parentPath = this.parent ? this.parent.recordPath(ids) : '';
+  return parentPath + '/' + this.name + '/new';
 }
 
 /**
  * Get "collection" url for resource. Ex '/users'.
  *
+ * @param {Array[String]} ids Array of ids for parents if resource is nested
  * @return {String} Url of resource "root"
  */
 
-Resource.prototype.collectionPath = function() {
-  return '/' + this.name;
+Resource.prototype.collectionPath = function(ids) {
+  var parentPath = this.parent ? this.parent.recordPath(ids) : '';
+  return parentPath + '/' + this.name;
 }
 
 /**
  * Get "collection" url for resource. Ex '/users/42'.
  *
+ * @param {Array[String]} ids Array of ids for parents if resource is nested
  * @return {String} Url of record resource including id
  */
 
-Resource.prototype.recordPath = function(id) {
-  return '/' + this.name + '/' + id;
+Resource.prototype.recordPath = function(ids) {
+  var parentPath = this.parent ? this.parent.recordPath(ids.slice(0, -1)) : '';
+  return parentPath + '/' + this.name + '/' + ids[ids.length - 1];
 }
 
 /**
