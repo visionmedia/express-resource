@@ -61,7 +61,9 @@ function Resource(name, actions, app) {
   // default actions
   for (var i = 0, key; i < orderedActions.length; ++i) {
     key = orderedActions[i];
-    if (actions[key]) this.mapDefaultAction(key, actions[key]);
+    var handler = actions[key];
+    if (typeof handler === 'function') handler = handler.bind(actions);
+    if (handler) this.mapDefaultAction(key, handler);
   }
 
   // auto-loader
