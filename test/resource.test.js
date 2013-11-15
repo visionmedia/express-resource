@@ -154,7 +154,7 @@ describe('app.resource()', function(){
      });
 
      it('should return edit urls', function() {
-       assert.equal(app.resource('users').editPath([42]), '/users/42/edit');
+       assert.equal(app.resource('users').editPath(42), '/users/42/edit');
      });
 
      it('should return collection urls', function() {
@@ -162,7 +162,7 @@ describe('app.resource()', function(){
      });
 
      it('should return record urls with ids', function() {
-       assert.equal(app.resource('users').recordPath([42]), '/users/42');
+       assert.equal(app.resource('users').recordPath(42), '/users/42');
      });
    });
 
@@ -178,19 +178,19 @@ describe('app.resource()', function(){
        threads.add(replies);
      });
      it('should return new urls', function() {
-       assert.equal(app.resource('replies').newPath([1, 2]), '/forums/1/threads/2/replies/new');
+       assert.equal(app.resource('replies').newPath(1, 2), '/forums/1/threads/2/replies/new');
      });
 
      it('should return edit urls', function() {
-       assert.equal(app.resource('replies').editPath([1, 2, 3]), '/forums/1/threads/2/replies/3/edit');
+       assert.equal(app.resource('replies').editPath(1, 2, 3), '/forums/1/threads/2/replies/3/edit');
      });
 
      it('should return collection urls', function() {
-       assert.equal(app.resource('replies').collectionPath([1, 2]), '/forums/1/threads/2/replies');
+       assert.equal(app.resource('replies').collectionPath(1, 2), '/forums/1/threads/2/replies');
      });
 
      it('should return record urls with ids', function() {
-       assert.equal(app.resource('replies').recordPath([1, 2, 3]), '/forums/1/threads/2/replies/3');
+       assert.equal(app.resource('replies').recordPath(1, 2, 3), '/forums/1/threads/2/replies/3');
      });
    });
 

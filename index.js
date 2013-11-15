@@ -254,9 +254,11 @@ Resource.prototype.mapDefaultAction = function(key, fn){
  * @return {String} Url of resource "root"
  */
 
-Resource.prototype.editPath = function(ids) {
-  var parentPath = this.parent ? this.parent.recordPath(ids.slice(0, -1)) : '';
-  return parentPath + '/' + this.name + '/' + ids[ids.length - 1] + '/edit';
+Resource.prototype.editPath = function() {
+  var ids = Array.prototype.slice.call(arguments);
+  var id = ids.pop();
+  var parentPath = this.parent ? this.parent.recordPath.apply(this.parent, ids) : '';
+  return parentPath + '/' + this.name + '/' + id + '/edit';
 }
 
 /**
@@ -266,9 +268,9 @@ Resource.prototype.editPath = function(ids) {
  * @return {String} Url of path to form for creating new resources
  */
 
-Resource.prototype.newPath = function(ids) {
-  debugger;
-  var parentPath = this.parent ? this.parent.recordPath(ids) : '';
+Resource.prototype.newPath = function() {
+  var ids = Array.prototype.slice.call(arguments);
+  var parentPath = this.parent ? this.parent.recordPath.apply(this.parent, ids) : '';
   return parentPath + '/' + this.name + '/new';
 }
 
@@ -279,8 +281,9 @@ Resource.prototype.newPath = function(ids) {
  * @return {String} Url of resource "root"
  */
 
-Resource.prototype.collectionPath = function(ids) {
-  var parentPath = this.parent ? this.parent.recordPath(ids) : '';
+Resource.prototype.collectionPath = function() {
+  var ids = Array.prototype.slice.call(arguments);
+  var parentPath = this.parent ? this.parent.recordPath.apply(this.parent, ids) : '';
   return parentPath + '/' + this.name;
 }
 
@@ -291,9 +294,11 @@ Resource.prototype.collectionPath = function(ids) {
  * @return {String} Url of record resource including id
  */
 
-Resource.prototype.recordPath = function(ids) {
-  var parentPath = this.parent ? this.parent.recordPath(ids.slice(0, -1)) : '';
-  return parentPath + '/' + this.name + '/' + ids[ids.length - 1];
+Resource.prototype.recordPath = function() {
+  var ids = Array.prototype.slice.call(arguments);
+  var id = ids.pop();
+  var parentPath = this.parent ? this.parent.recordPath.apply(this.parent, ids) : '';
+  return parentPath + '/' + this.name + '/' + id;
 }
 
 /**
