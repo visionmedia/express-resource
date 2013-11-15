@@ -144,23 +144,24 @@ describe('app.resource()', function(){
    })
   
    describe('url generation for non-nested resources', function() {
+     var app;
+     beforeEach(function() {
+       app = express();
+       app.resource('users');
+     });
      it('should return new urls', function() {
-       var app = express();
        assert.equal(app.resource('users').newPath(), '/users/new');
      });
 
      it('should return edit urls', function() {
-       var app = express();
        assert.equal(app.resource('users').editPath(42), '/users/42/edit');
      });
 
      it('should return collection urls', function() {
-       var app = express();
        assert.equal(app.resource('users').collectionPath(), '/users');
      });
 
      it('should return record urls with ids', function() {
-       var app = express();
        assert.equal(app.resource('users').recordPath(42), '/users/42');
      });
    });
