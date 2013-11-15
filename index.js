@@ -246,6 +246,47 @@ Resource.prototype.mapDefaultAction = function(key, fn){
 };
 
 /**
+ * Get edit path for resource. Ex '/users/42/edit'.
+ *
+ * @param {String} id of resource to edit
+ * @return {String} Url of resource "root"
+ */
+
+Resource.prototype.editPath = function(id) {
+  return '/' + this.name + '/' + id + '/edit';
+}
+
+/**
+ * Get path for creating a new resource. Ex '/users/new'.
+ *
+ * @return {String} Url of path to form for creating new resources
+ */
+
+Resource.prototype.newPath = function() {
+  return '/' + this.name + '/new';
+}
+
+/**
+ * Get "collection" url for resource. Ex '/users'.
+ *
+ * @return {String} Url of resource "root"
+ */
+
+Resource.prototype.collectionPath = function() {
+  return '/' + this.name;
+}
+
+/**
+ * Get "collection" url for resource. Ex '/users/42'.
+ *
+ * @return {String} Url of record resource including id
+ */
+
+Resource.prototype.recordPath = function(id) {
+  return '/' + this.name + '/' + id;
+}
+
+/**
  * Setup http verb methods.
  */
 
