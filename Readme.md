@@ -45,7 +45,7 @@ The `app.resource()` method returns a new `Resource` object, which can be used t
 
     var express = require('express')
       , Resource = require('express-resource')
-      , app = express.createServer();
+      , app = express();
 
     app.resource('forums', require('./forum'));
 
