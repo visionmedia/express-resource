@@ -30,6 +30,8 @@ var orderedActions = [
   , 'update'  //  PUT   /:id
   , 'patch'   //  PATCH /:id
   , 'destroy' //  DEL   /:id
+  , 'default_get'
+  , 'default'
 ];
 
 /**
@@ -239,6 +241,12 @@ Resource.prototype.mapDefaultAction = function(key, fn){
       break;
     case 'destroy':
       this.del(fn);
+      break;
+    case 'default_get':
+      this.get('/*', fn);
+      break;
+    case 'default':
+      this.all('/*', fn);
       break;
   }
 };
