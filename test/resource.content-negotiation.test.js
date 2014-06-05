@@ -3,11 +3,12 @@ var assert = require('assert')
   , express = require('express')
   , request = require('supertest')
   , batch = require('./support/batch')
-  , Resource = require('..');
+  , expressResource = require('..')
+  , bodyParser = require('body-parser');
 
 describe('app.resource()', function(){
   it('should support content-negotiation via extension', function(done){
-    var app = express();
+    var app = expressResource(express());
     var next = batch(done);
 
     app.set('json spaces', 0);
@@ -43,19 +44,19 @@ describe('app.resource()', function(){
   })
 
   it('should support format methods', function(done){
-    var app = express();
+    var app = expressResource(express());
     var next = batch(done);
     app.set('json spaces', 0);
     app.resource('pets', require('./fixtures/pets.format-methods'));
-  
+
     request(app)
     .get('/pets.xml')
     .expect('<pets><pet>tobi</pet><pet>jane</pet><pet>loki</pet></pets>', next());
-  
+
     request(app)
     .get('/pets.json')
     .expect('["tobi","jane","loki"]', next());
-      
+
     request(app)
     .get('/pets')
     .expect('["tobi","jane","loki"]', next());
@@ -64,10 +65,10 @@ describe('app.resource()', function(){
 
 describe('app.VERB()', function(){
   it('should map additional routes', function(done){
-    var app = express();
+    var app = expressResource(express());
 
     app.set('json spaces', 0);
-    app.use(express.bodyParser());
+    app.use(bodyParser());
 
     var pets = app.resource('pets');
     var toys = app.resource('toys');
@@ -83,11 +84,11 @@ describe('app.VERB()', function(){
   })
 
   it('should map format objects', function(done){
-    var app = express();
+    var app = expressResource(express());
     var next = batch(done);
 
     app.set('json spaces', 0);
-    app.use(express.bodyParser());
+    app.use(bodyParser());
 
     var toys = app.resource('toys');
     var values = ['balls', 'platforms', 'tunnels'];
@@ -123,7 +124,7 @@ describe('app.VERB()', function(){
 
 describe('Resource#add(resource)', function(){
   it('should support nested resources', function(done){
-    var app = express();
+    var app = expressResource(express());
     app.set('json spaces', 0);
 
     var users = app.resource('users');
