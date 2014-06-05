@@ -1,7 +1,9 @@
 
 var express = require('express')
-  , resource = require('..')
+  , expressResource = require('..')
   , app = express();
+
+app = expressResource(app);
 
 var main = app.resource(require('./controllers/main'));
 var forums = app.resource('forums', require('./controllers/forum'));

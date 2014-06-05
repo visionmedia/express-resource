@@ -10,11 +10,9 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , methods = require('methods')
+var methods = require('methods')
   , debug = require('debug')('express-resource')
   , lingo = require('lingo')
-  , app = express.application
   , en = lingo.en;
 
 /**
@@ -22,21 +20,46 @@ var express = require('express')
  */
 
 var orderedActions = [
-   'index'    //  GET   /
+    'index'    //  GET   /
   , 'new'     //  GET   /new
   , 'create'  //  POST  /
   , 'show'    //  GET   /:id
   , 'edit'    //  GET   /edit/:id
   , 'update'  //  PUT   /:id
   , 'patch'   //  PATCH /:id
-  , 'destroy' //  DEL   /:id
+  , 'destroy' //  DELETE   /:id
 ];
 
 /**
- * Expose `Resource`.
+ * Expose `app`.
  */
 
-module.exports = Resource;
+exports = module.exports = function(app) {
+  app.resource = resource.bind(app);
+  return app;
+};
+
+/**
+ * Define a resource with the given `name` and `actions`.
+ *
+ * @param {String|Object} name or actions
+ * @param {Object} actions
+ * @return {Resource}
+ * @api public
+ */
+function resource(name, actions, opts){
+  var options = actions || {};
+  if ('object' === typeof name) {
+    actions = name;
+    name = null;
+  }
+  if (options.id) actions.id = options.id;
+  this.resources = this.resources || {};
+  if (!actions) return this.resources[name] || new Resource(name, null, this);
+  for (var key in opts) options[key] = opts[key];
+  var res = this.resources[name] = new Resource(name, actions, this);
+  return res;
+}
 
 /**
  * Initialize a new `Resource` with the given `name` and `actions`.
@@ -47,13 +70,15 @@ module.exports = Resource;
  * @api private
  */
 
+exports.Resource = Resource;
+
 function Resource(name, actions, app) {
   this.name = name;
-  this.app = app;
   this.routes = {};
   actions = actions || {};
+  this.app = app;
   this.base = actions.base || '/';
-  if ('/' != this.base[this.base.length - 1]) this.base += '/';
+  if ('/' !== this.base[this.base.length - 1]) this.base += '/';
   this.format = actions.format;
   this.id = actions.id || this.defaultId;
   this.param = ':' + this.id;
@@ -66,7 +91,7 @@ function Resource(name, actions, app) {
 
   // auto-loader
   if (actions.load) this.load(actions.load);
-};
+}
 
 /**
  * Set the auto-load `fn`.
@@ -86,13 +111,13 @@ Resource.prototype.load = function(fn){
       if (err) return next(err);
       // TODO: ideally we should next() passed the
       // route handler
-      if (null == obj) return res.send(404);
+      if (typeof obj === 'undefined') return res.send(404);
       req[id] = obj;
       next();
-    };
-    
+    }
+
     // Maintain backward compatibility
-    if (2 == fn.length) {
+    if (2 === fn.length) {
       fn(req.params[id], callback);
     } else {
       fn(req, req.params[id], callback);
@@ -130,9 +155,15 @@ Resource.prototype.map = function(method, path, fn){
     , orig = path;
 
   if (method instanceof Resource) return this.add(method);
-  if ('function' == typeof path) fn = path, path = '';
-  if ('object' == typeof path) fn = path, path = '';
-  if ('/' == path[0]) path = path.substr(1);
+  if ('function' === typeof path) {
+    fn = path;
+    path = '';
+  }
+  if ('object' === typeof path) {
+    fn = path;
+    path = '';
+  }
+  if ('/' === path[0]) path = path.substr(1);
   else path = path ? this.param + '/' + path : this.param;
   method = method.toLowerCase();
 
@@ -154,7 +185,7 @@ Resource.prototype.map = function(method, path, fn){
   this.app[method](route, function(req, res, next){
     req.format = req.params.format || req.format || self.format;
     if (req.format) res.type(req.format);
-    if ('object' == typeof fn) {
+    if ('object' === typeof fn) {
       if (fn[req.format]) {
         fn[req.format](req, res, next);
       } else {
@@ -193,12 +224,15 @@ Resource.prototype.add = function(resource){
     for (var key in routes) {
       route = routes[key];
       delete routes[key];
-      if (method == 'del') method = 'delete';
+      if (method === 'destroy') method = 'delete';
+      // TODO: implement `router` or `app._router.stack` here
+      /*
       app.routes[method].forEach(function(route, i){
-        if (route.path == key) {
+        if (route.path === key) {
           app.routes[method].splice(i, 1);
         }
       })
+      */
       resource.map(route.method, route.orig, route.fn);
     }
   }
@@ -238,7 +272,7 @@ Resource.prototype.mapDefaultAction = function(key, fn){
       this.patch(fn);
       break;
     case 'destroy':
-      this.del(fn);
+      this.delete(fn);
       break;
   }
 };
@@ -247,31 +281,13 @@ Resource.prototype.mapDefaultAction = function(key, fn){
  * Setup http verb methods.
  */
 
-methods.concat(['del', 'all']).forEach(function(method){
+methods.concat(['delete', 'all']).forEach(function(method){
   Resource.prototype[method] = function(path, fn){
-    if ('function' == typeof path
-      || 'object' == typeof path) fn = path, path = '';
+    if ('function' === typeof path || 'object' === typeof path) {
+      fn = path;
+      path = '';
+    }
     this.map(method, path, fn);
     return this;
   }
 });
-
-/**
- * Define a resource with the given `name` and `actions`.
- *
- * @param {String|Object} name or actions
- * @param {Object} actions
- * @return {Resource}
- * @api public
- */
-
-app.resource = function(name, actions, opts){
-  var options = actions || {};
-  if ('object' == typeof name) actions = name, name = null;
-  if (options.id) actions.id = options.id;
-  this.resources = this.resources || {};
-  if (!actions) return this.resources[name] || new Resource(name, null, this);
-  for (var key in opts) options[key] = opts[key];
-  var res = this.resources[name] = new Resource(name, actions, this);
-  return res;
-};

@@ -1,7 +1,9 @@
 
 var express = require('express')
-  , resource = require('..')
+  , expressResource = require('..')
   , app = express();
+
+app = expressResource(app);
 
 var users = app.resource('users', require('./controllers/user'));
 
