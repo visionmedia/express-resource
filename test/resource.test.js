@@ -1,6 +1,7 @@
 
 var assert = require('assert')
   , express = require('express')
+  , should = require('should')
   , Resource = require('..')
   , request = require('supertest')
   , batch = require('./support/batch');
@@ -54,6 +55,21 @@ describe('app.resource()', function(){
     .del('/forums/5')
     .expect('destroy forum 5', next());
   })
+
+  it('should bind this correctly', function(done) {
+    var app = express();
+    var testController = {
+      'users': 'userA userB',
+      'index': function(req, res) {
+        res.send(this.users);
+      }
+    };
+
+    app.resource('users', testController);
+    request(app)
+      .get('/users')
+      .expect('userA userB', done);
+  });
 
   it('should support root resources', function(done){
      var app = express();
