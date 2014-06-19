@@ -87,10 +87,14 @@ Resource.prototype.load = function(fn){
       // TODO: ideally we should next() passed the
       // route handler
       if (null == obj) return res.send(404);
-      req[id] = obj;
+      if (id=="user") {
+          req["requested"+lingo.capitalize(id)] = obj;
+      } else {
+        req[id] = obj;
+      };
       next();
     };
-    
+
     // Maintain backward compatibility
     if (2 == fn.length) {
       fn(req.params[id], callback);
