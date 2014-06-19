@@ -1,4 +1,3 @@
-
 /*!
  * Express - Resource
  * Copyright(c) 2010-2012 TJ Holowaychuk <tj@vision-media.ca>
@@ -272,6 +271,7 @@ app.resource = function(name, actions, opts){
   this.resources = this.resources || {};
   if (!actions) return this.resources[name] || new Resource(name, null, this);
   for (var key in opts) options[key] = opts[key];
+  for (var key in options) actions[key] = options[key];
   var res = this.resources[name] = new Resource(name, actions, this);
   return res;
 };
