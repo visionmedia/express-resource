@@ -61,7 +61,9 @@ function Resource(name, actions, app) {
   // default actions
   for (var i = 0, key; i < orderedActions.length; ++i) {
     key = orderedActions[i];
-    if (actions[key]) this.mapDefaultAction(key, actions[key]);
+    var handler = actions[key];
+    if (typeof handler === 'function') handler = handler.bind(actions);
+    if (handler) this.mapDefaultAction(key, handler);
   }
 
   // auto-loader
@@ -187,6 +189,8 @@ Resource.prototype.add = function(resource){
     + (this.name ? this.name + '/': '')
     + this.param + '/';
 
+  resource.parent = this;
+
   // re-define previous actions
   for (var method in resource.routes) {
     routes = resource.routes[method];
@@ -242,6 +246,60 @@ Resource.prototype.mapDefaultAction = function(key, fn){
       break;
   }
 };
+
+/**
+ * Get edit path for resource. Ex '/users/42/edit'.
+ *
+ * @param {String} ids Array of ids for parents if resource is nested
+ * @return {String} Url of resource "root"
+ */
+
+Resource.prototype.editPath = function() {
+  var ids = Array.prototype.slice.call(arguments);
+  var id = ids.pop();
+  var parentPath = this.parent ? this.parent.recordPath.apply(this.parent, ids) : '';
+  return parentPath + '/' + this.name + '/' + id + '/edit';
+}
+
+/**
+ * Get path for creating a new resource. Ex '/users/new'.
+ *
+ * @param {Array[String]} ids Array of ids for parents if resource is nested
+ * @return {String} Url of path to form for creating new resources
+ */
+
+Resource.prototype.newPath = function() {
+  var ids = Array.prototype.slice.call(arguments);
+  var parentPath = this.parent ? this.parent.recordPath.apply(this.parent, ids) : '';
+  return parentPath + '/' + this.name + '/new';
+}
+
+/**
+ * Get "collection" url for resource. Ex '/users'.
+ *
+ * @param {Array[String]} ids Array of ids for parents if resource is nested
+ * @return {String} Url of resource "root"
+ */
+
+Resource.prototype.collectionPath = function() {
+  var ids = Array.prototype.slice.call(arguments);
+  var parentPath = this.parent ? this.parent.recordPath.apply(this.parent, ids) : '';
+  return parentPath + '/' + this.name;
+}
+
+/**
+ * Get "collection" url for resource. Ex '/users/42'.
+ *
+ * @param {Array[String]} ids Array of ids for parents if resource is nested
+ * @return {String} Url of record resource including id
+ */
+
+Resource.prototype.recordPath = function() {
+  var ids = Array.prototype.slice.call(arguments);
+  var id = ids.pop();
+  var parentPath = this.parent ? this.parent.recordPath.apply(this.parent, ids) : '';
+  return parentPath + '/' + this.name + '/' + id;
+}
 
 /**
  * Setup http verb methods.

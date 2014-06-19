@@ -1,6 +1,7 @@
 
 var assert = require('assert')
   , express = require('express')
+  , should = require('should')
   , Resource = require('..')
   , request = require('supertest')
   , batch = require('./support/batch');
@@ -54,6 +55,21 @@ describe('app.resource()', function(){
     .del('/forums/5')
     .expect('destroy forum 5', next());
   })
+
+  it('should bind this correctly', function(done) {
+    var app = express();
+    var testController = {
+      'users': 'userA userB',
+      'index': function(req, res) {
+        res.send(this.users);
+      }
+    };
+
+    app.resource('users', testController);
+    request(app)
+      .get('/users')
+      .expect('userA userB', done);
+  });
 
   it('should support root resources', function(done){
      var app = express();
@@ -127,6 +143,57 @@ describe('app.resource()', function(){
      .expect('destroy thread 50 of forum 12', next()) 
    })
   
+   describe('url generation for non-nested resources', function() {
+     var app;
+     beforeEach(function() {
+       app = express();
+       app.resource('users');
+     });
+     it('should return new urls', function() {
+       assert.equal(app.resource('users').newPath(), '/users/new');
+     });
+
+     it('should return edit urls', function() {
+       assert.equal(app.resource('users').editPath(42), '/users/42/edit');
+     });
+
+     it('should return collection urls', function() {
+       assert.equal(app.resource('users').collectionPath(), '/users');
+     });
+
+     it('should return record urls with ids', function() {
+       assert.equal(app.resource('users').recordPath(42), '/users/42');
+     });
+   });
+
+   describe('url generation for nested resources', function() {
+     var app;
+     var dummyController = {show: function(req, res) { res.send('hello world'); }};
+     beforeEach(function() {
+       app = express();
+       var forums = app.resource('forums', dummyController);
+       var threads = app.resource('threads', dummyController);
+       var replies = app.resource('replies', dummyController);
+       forums.add(threads);
+       threads.add(replies);
+     });
+     it('should return new urls', function() {
+       assert.equal(app.resource('replies').newPath(1, 2), '/forums/1/threads/2/replies/new');
+     });
+
+     it('should return edit urls', function() {
+       assert.equal(app.resource('replies').editPath(1, 2, 3), '/forums/1/threads/2/replies/3/edit');
+     });
+
+     it('should return collection urls', function() {
+       assert.equal(app.resource('replies').collectionPath(1, 2), '/forums/1/threads/2/replies');
+     });
+
+     it('should return record urls with ids', function() {
+       assert.equal(app.resource('replies').recordPath(1, 2, 3), '/forums/1/threads/2/replies/3');
+     });
+   });
+
    describe('"id" option', function(){
      it('should allow overriding the default', function(done){
        var app = express();
