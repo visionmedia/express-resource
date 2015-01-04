@@ -29,7 +29,7 @@ var orderedActions = [
   , 'edit'    //  GET   /edit/:id
   , 'update'  //  PUT   /:id
   , 'patch'   //  PATCH /:id
-  , 'destroy' //  DEL   /:id
+  , 'destroy' //  DELETE   /:id
 ];
 
 /**
@@ -238,7 +238,7 @@ Resource.prototype.mapDefaultAction = function(key, fn){
       this.patch(fn);
       break;
     case 'destroy':
-      this.del(fn);
+      this.delete(fn);
       break;
   }
 };
