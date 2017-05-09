@@ -5,49 +5,51 @@
 
 ## Installation
 
-npm:
-
     $ npm install express-resource
 
 ## Usage
 
  To get started simply `require('express-resource')`, and this module will monkey-patch Express, enabling resourceful routing by providing the `app.resource()` method. A "resource" is simply an object, which defines one of more of the supported "actions" listed below:
 
-    exports.index = function(req, res){
-      res.send('forum index');
-    };
+```js
+exports.index = function(req, res){
+  res.send('forum index');
+};
 
-    exports.new = function(req, res){
-      res.send('new forum');
-    };
+exports.new = function(req, res){
+  res.send('new forum');
+};
 
-    exports.create = function(req, res){
-      res.send('create forum');
-    };
+exports.create = function(req, res){
+  res.send('create forum');
+};
 
-    exports.show = function(req, res){
-      res.send('show forum ' + req.params.forum);
-    };
+exports.show = function(req, res){
+  res.send('show forum ' + req.params.forum);
+};
 
-    exports.edit = function(req, res){
-      res.send('edit forum ' + req.params.forum);
-    };
+exports.edit = function(req, res){
+  res.send('edit forum ' + req.params.forum);
+};
 
-    exports.update = function(req, res){
-      res.send('update forum ' + req.params.forum);
-    };
+exports.update = function(req, res){
+  res.send('update forum ' + req.params.forum);
+};
 
-    exports.destroy = function(req, res){
-      res.send('destroy forum ' + req.params.forum);
-    };
+exports.destroy = function(req, res){
+  res.send('destroy forum ' + req.params.forum);
+};
+```
 
 The `app.resource()` method returns a new `Resource` object, which can be used to further map pathnames, nest resources, and more.
 
-    var express = require('express')
-      , Resource = require('express-resource')
-      , app = express();
+```js
+var express = require('express')
+  , Resource = require('express-resource')
+  , app = express();
 
-    app.resource('forums', require('./forum'));
+app.resource('forums', require('./forum'));
+```
 
 ## Default Action Mapping
 
@@ -65,7 +67,9 @@ Actions are then mapped as follows (by default), providing `req.params.forum` wh
 
 Specify a top-level resource by omitting the resource name:
 
-    app.resource(require('./forum'));
+```js
+app.resource(require('./forum'));
+```
 
 Top-level actions are then mapped as follows (by default):
 
@@ -81,82 +85,96 @@ Top-level actions are then mapped as follows (by default):
 
 Resources have the concept of "auto-loading" associated data. For example we can pass a "load" property along with our actions, which should invoke the callback function with an error, or the object such as a `User`:
 
+```js
+User.load = function(id, fn) {
+  fn(null, users[id]);
+};
 
-      User.load = function(id, fn) {
-        fn(null, users[id]);
-      };
+// or
 
-      // or
-      
-      User.load = function(req, id, fn) {
-        fn(null, users[id]);
-      };
+User.load = function(req, id, fn) {
+  fn(null, users[id]);
+};
 
-      app.resource('users', { show: ..., load: User.load });
-      
+app.resource('users', { show: ..., load: User.load });
+```
+
  With the auto-loader defined, the `req.user` object will now be available to the actions automatically. We may pass the "load" option as the third param as well, although this is equivalent to above, but allows you to either export ".load" along with your actions, or passing it explicitly:
- 
-     app.resource('users', require('./user'), { load: User.load });
+
+```js
+app.resource('users', require('./user'), { load: User.load });
+```
 
  Finally we can utilize the `Resource#load(fn)` method, which again is functionally equivalent:
- 
-     var user = app.resource('users', require('./user'));
-     user.load(User.load);
+
+```js
+var user = app.resource('users', require('./user'));
+user.load(User.load);
+```
 
   This functionality works when nesting resources as well, for example suppose we have a forum, which contains threads, our setup may look something like below:
-  
-      var forums = app.resource('forums', require('resources/forums'), { load: Forum.get });
-      var threads = app.resource('threads', require('resources/threads'), { load: Thread.get });
 
-      forums.add(threads);
+```js
+var forums = app.resource('forums', require('resources/forums'), { load: Forum.get });
+var threads = app.resource('threads', require('resources/threads'), { load: Thread.get });
+
+forums.add(threads);
+```
 
   Now when we request `GET /forums/5/threads/12` both the `req.forum` object, and `req.thread` will be available to thread's _show_ action.
 
 ## Content-Negotiation
 
   Currently express-resource supports basic content-negotiation support utilizing extnames or "formats". This can currently be done two ways, first we may define actions as we normally would, and utilize the `req.format` property, and respond accordingly. The following would respond to `GET /pets.xml`, and `GET /pets.json`.
-  
-      var pets = ['tobi', 'jane', 'loki'];
 
-      exports.index = function(req, res){
-        switch (req.format) {
-          case 'json':
-            res.send(pets);
-            break;
-          case 'xml':
-            res.send('<pets>' + pets.map(function(pet){
-              return '<pet>' + pet + '</pet>';
-            }).join('') + '</pets>');
-            break;
-          default:
-            res.send(406);
-        }
-      };
+```js
+var pets = ['tobi', 'jane', 'loki'];
 
- The following is equivalent, however we separate the logic into several callbacks, each representing a format. 
- 
-     exports.index = {
-       json: function(req, res){
-         res.send(pets);
-       },
+exports.index = function(req, res){
+  switch (req.format) {
+    case 'json':
+      res.send(pets);
+      break;
+    case 'xml':
+      res.send('<pets>' + pets.map(function(pet){
+        return '<pet>' + pet + '</pet>';
+      }).join('') + '</pets>');
+      break;
+    default:
+      res.send(406);
+  }
+};
+```
 
-       xml: function(req, res){
-         res.send('<pets>' + pets.map(function(pet){
-           return '<pet>' + pet + '</pet>';
-         }).join('') + '</pets>');
-       }
-     };
+ The following is equivalent, however we separate the logic into several callbacks, each representing a format.
+
+```js
+exports.index = {
+  json: function(req, res){
+    res.send(pets);
+  },
+
+  xml: function(req, res){
+    res.send('<pets>' + pets.map(function(pet){
+      return '<pet>' + pet + '</pet>';
+    }).join('') + '</pets>');
+  }
+};
+```
 
  We may also provide a `default` format, invoked when either no extension is given, or one that does not match another method is given:
- 
- 
-     exports.default = function(req, res){
-       res.send('Unsupported format "' + req.format + '"', 406);
-     };
+
+```js
+exports.default = function(req, res){
+  res.send('Unsupported format "' + req.format + '"', 406);
+};
+```
 
  To assign a default format to an existing method, we can provide the `format` option to the resource. With the following definition both `GET /users/5` and `GET /users/5.json` will invoke the `show.json` action, or `show` with `req.format = 'json'`.
- 
-     app.resource('users', actions, { format: 'json' });
+
+```js
+app.resource('users', actions, { format: 'json' });
+```
 
 ## Running Tests
 
