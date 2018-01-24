@@ -23,8 +23,8 @@ var express = require('express')
 
 var orderedActions = [
    'index'    //  GET   /
-  , 'new'     //  GET   /new
-  , 'create'  //  POST  /
+  , 'create'  //  GET  /create
+  , 'store'     //  POST   /
   , 'show'    //  GET   /:id
   , 'edit'    //  GET   /edit/:id
   , 'update'  //  PUT   /:id
@@ -219,10 +219,10 @@ Resource.prototype.mapDefaultAction = function(key, fn){
     case 'index':
       this.get('/', fn);
       break;
-    case 'new':
-      this.get('/new', fn);
-      break;
     case 'create':
+      this.get('/create', fn);
+      break;
+    case 'store':
       this.post('/', fn);
       break;
     case 'show':
