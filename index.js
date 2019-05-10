@@ -90,7 +90,7 @@ Resource.prototype.load = function(fn){
       req[id] = obj;
       next();
     };
-    
+
     // Maintain backward compatibility
     if (2 == fn.length) {
       fn(req.params[id], callback);
@@ -238,7 +238,7 @@ Resource.prototype.mapDefaultAction = function(key, fn){
       this.patch(fn);
       break;
     case 'destroy':
-      this.del(fn);
+      this.delete(fn);
       break;
   }
 };
